@@ -54,7 +54,7 @@ class AttendanceAdminManager extends AbstractModuleManager
             $restEndPoint->process('delete', $pathParams);
         });
 
-        \Classes\Macaw::post(REST_API_PATH.'attendance/punch-in', function ($pathParams) {
+        \Classes\Macaw::post(REST_API_PATH.'attendance/punch-in/(:num)', function ($pathParams) {
             $restEndPoint = new AttendanceRestEndPoint();
             $restEndPoint->process('punchIn', $pathParams);
         });
