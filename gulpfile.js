@@ -184,6 +184,7 @@ gulp.task('modules-js', (done) => {
     'attendance',
     'dashboard',
     'dependents',
+    'electricity',
     'emergency_contact',
     'employees',
     'loans',

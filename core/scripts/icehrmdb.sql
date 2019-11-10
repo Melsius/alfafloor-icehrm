@@ -877,6 +877,16 @@ create table `Ethnicity` (
 	primary key  (`id`)
 ) engine=innodb default charset=utf8;
 
+create table `EmployeeElectricity` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+	`employee` bigint(20) NOT NULL,
+	`date` date NOT NULL,
+	`measurement` decimal(10,2) NOT NULL,
+	`details` text default null,
+	CONSTRAINT `Fk_EmployeeElectricity_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	primary key  (`id`)
+) engine=innodb default charset=utf8
+;
 create table `EmployeeImmigrationStatus` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
 	`employee` bigint(20) NOT NULL,
