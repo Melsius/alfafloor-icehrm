@@ -15,8 +15,8 @@ if (!defined('MYSQL_ROOT_USER') || !defined('MYSQL_ROOT_PASS')) {
     //Tests running on vagrant
     define('APP_BASE_PATH', TEST_BASE_PATH.'../core/');
     define('CLIENT_BASE_PATH', TEST_BASE_PATH.'../../deployment/clients/test/');
-    define('BASE_URL', 'http://app.app.dev/');
-    define('CLIENT_BASE_URL', 'http://clients.app.dev/dev/');
+    define('BASE_URL', 'http://192.168.56.101/');
+    define('CLIENT_BASE_URL', 'http://192.168.56.101/icehrm/');
 } else {
     //Tests running on deploy
     define('APP_BASE_PATH', realpath(dirname(__FILE__).'/../app')."/core/");
@@ -26,9 +26,9 @@ if (!defined('MYSQL_ROOT_USER') || !defined('MYSQL_ROOT_PASS')) {
 }
 
 if (!defined('MYSQL_ROOT_USER') || !defined('MYSQL_ROOT_PASS')) {
-    define('APP_DB', 'testing');
-    define('APP_USERNAME', 'root');
-    define('APP_PASSWORD', 'dev');
+    define('APP_DB', 'icehrmtest');
+    define('APP_USERNAME', 'icehrmtest');
+    define('APP_PASSWORD', 'testpassword');
 } else {
     define('APP_DB', 'icehrmht');
     define('APP_USERNAME', MYSQL_ROOT_USER);
@@ -36,8 +36,8 @@ if (!defined('MYSQL_ROOT_USER') || !defined('MYSQL_ROOT_PASS')) {
 }
 
 if (!defined('MYSQL_ROOT_USER') || !defined('MYSQL_ROOT_PASS')) {
-    define('MYSQL_ROOT_USER', 'root');
-    define('MYSQL_ROOT_PASS', 'dev');
+    define('MYSQL_ROOT_USER', 'icehrmtest');
+    define('MYSQL_ROOT_PASS', 'testpassword');
 }
 
 define('APP_HOST', 'localhost');
