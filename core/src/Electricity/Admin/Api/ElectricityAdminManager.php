@@ -22,4 +22,14 @@ class ElectricityAdminManager extends AbstractModuleManager
     {
         $this->addModelClass('EmployeeElectricity');
     }
+    
+    public function initCalculationHooks()
+    {
+        $this->addCalculationHook(
+            'EmployeeElectricity_getElectricityUsage',
+            'Electricity Usage',
+            '\\Electricity\\Admin\\Api\\ElectricityUtil',
+            'getElectricityUsage'
+        );
+    }
 }
