@@ -1,7 +1,7 @@
 {
-    "label": "Dashboard",
-    "menu": "Electricity Usage",
-    "order": "1",
+    "label": "Electricity Dashboard",
+    "menu": "Employees",
+    "order": "9",
     "icon": "fa-window-maximize",
     "user_levels": [
         "Admin",
@@ -22,5 +22,5 @@
         }
     },
     "model_namespace": "\\Electricity\\Common\\Model",
-    "manager": "\\Electricity\\User\\Api\\ElectricityModulesManager"
+    "manager": "\\Electricity\\Admin\\Api\\ElectricityAdminManager"
 }

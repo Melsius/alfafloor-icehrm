@@ -130,6 +130,7 @@ gulp.task('admin-js', (done) => {
     'dashboard',
     'data',
     'employees',
+    'electricity',
     'fieldnames',
     'jobs',
     'loans',
@@ -178,54 +179,53 @@ gulp.task('admin-js', (done) => {
 });
 
 gulp.task('modules-js', (done) => {
-  // we define our input files, which we want to have
-  // bundled:
-  const files = [
-    'attendance',
-    'dashboard',
-    'dependents',
-    'electricity',
-    'emergency_contact',
-    'employees',
-    'loans',
-    'overtime',
-    'projects',
-    'qualifications',
-    'reports',
-    'salary',
-    'staffdirectory',
-    'time_sheets',
-    'travel',
-  ];
+    // we define our input files, which we want to have
+    // bundled:
+    const files = [
+        'attendance',
+        'dashboard',
+        'dependents',
+        'emergency_contact',
+        'employees',
+        'loans',
+        'overtime',
+        'projects',
+        'qualifications',
+        'reports',
+        'salary',
+        'staffdirectory',
+        'time_sheets',
+        'travel',
+    ];
     // map them to our stream function
-  const tasks = files.map(entry => browserify({
-    entries: [`web/modules/src/${entry}/index.js`],
-    basedir: '.',
-    debug: true,
-    cache: {},
-    packageCache: {},
-  })
-    .transform('babelify', {
-      presets: ['es2015'], extensions: ['.js'],
+    const tasks = files.map(entry => browserify({
+        entries: [`web/modules/src/${entry}/index.js`],
+        basedir: '.',
+        debug: true,
+        cache: {},
+        packageCache: {},
     })
-    .bundle()
-    .pipe(source(`${entry}/lib.js`))
-  // rename them to have "bundle as postfix"
-    .pipe(rename(`${entry}.js`))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglifyes(
-      {
-        compress: true,
-        mangle: {
-          reserved: [],
-        },
-      },
-    ))
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./web/modules/dist/')));
+        .transform('babelify', {
+            presets: ['es2015'], extensions: ['.js'],
+        })
+        .bundle()
+        .pipe(source(`${entry}/lib.js`))
+        // rename them to have "bundle as postfix"
+        .pipe(rename(`${entry}.js`))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglifyes(
+            {
+                compress: true,
+                mangle: {
+                    reserved: [],
+                },
+            },
+        ))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/modules/dist/')));
     // create a merged stream
-  es.merge.apply(null, tasks).on('end', done);
+    es.merge.apply(null, tasks).on('end', done);
 });
 
 gulp.task('default', gulp.series(
