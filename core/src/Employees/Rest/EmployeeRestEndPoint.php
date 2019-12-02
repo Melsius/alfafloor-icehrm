@@ -8,6 +8,7 @@ use Classes\PermissionManager;
 use Classes\RestEndPoint;
 use Employees\Common\Model\Employee;
 use Users\Common\Model\User;
+use Utils\LogManager;
 
 class EmployeeRestEndPoint extends RestEndPoint
 {
@@ -35,6 +36,36 @@ class EmployeeRestEndPoint extends RestEndPoint
         }
 
         return $this->listByQuery($query);
+    }
+
+    public function find(User $user, $slug)
+    {
+        if (empty($slug)) {
+            return new IceResponse(IceResponse::ERROR, "Employee not found", 404);
+        }
+
+        if ($user->user_level !== 'Admin') {
+            return new IceResponse(IceResponse::ERROR, "Permission denied", 403);
+        }
+
+        $filter = "";
+        foreach (explode('&', $slug) as $chunk) {
+            $param = explode("=", $chunk);
+
+            if ($param) {
+                $filter .= "$param[0] = '$param[1]'";
+            }
+        }
+        LogManager::getInstance()->info("filter");
+        $emp = new Employee();
+        $emp->Load($filter);
+
+        if (!empty($emp->id)) {
+            $emp = $this->cleanObject($emp);
+            $emp = $this->removeNullFields($emp);
+            return new IceResponse(IceResponse::SUCCESS, $emp);
+        }
+        return new IceResponse(IceResponse::ERROR, "Employee not found ($filter)", 404);
     }
 
     public function get(User $user, $parameter)
