@@ -888,7 +888,7 @@ INSERT INTO `Settings` (`name`, `value`, `description`, `meta`) VALUES
 
 
 INSERT INTO `Settings` (`name`, `value`, `description`, `meta`) VALUES
-  ('Attendance: Overtime Calculation Class', 'BasicOvertimeCalculator', 'Set the method used to calculate overtime','["value", {"label":"Value","type":"select","source":[["BasicOvertimeCalculator","BasicOvertimeCalculator"],["CaliforniaOvertimeCalculator","CaliforniaOvertimeCalculator"]]}]');
+  ('Attendance: Overtime Calculation Class', 'BasicOvertimeCalculator', 'Set the method used to calculate overtime','["value", {"label":"Value","type":"select","source":[["BasicOvertimeCalculator","BasicOvertimeCalculator"],["CaliforniaOvertimeCalculator","CaliforniaOvertimeCalculator"],,["AlfaOvertimeCalculator","AlfaOvertimeCalculator"]]}]');
 
 REPLACE INTO `Settings` (`name`, `value`, `description`, `meta`) VALUES
   ('Attendance: Overtime Calculation Period', 'Daily', 'Set the period for overtime calculation. (Affects attendance sheets)','["value", {"label":"Value","type":"select","source":[["Daily","Daily"],["Weekly","Weekly"]]}]');
