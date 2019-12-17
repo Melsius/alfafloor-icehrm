@@ -4,12 +4,16 @@ namespace Electricity\Admin\Api;
 
 use Electricity\Common\Model\EmployeeElectricity;
 use Classes\SettingsManager;
+use Utils\LogManager;
 
 class ElectricityUtil
 {
     public $eElectricity;
 
-    public function __construct($employeeElectricity) {
+    public function __construct($employeeElectricity = NULL) {
+        if ($employeeElectricity == NULL) {
+            $employeeElectricity = new EmployeeElectricity();
+        }
         $this->eElectricity = $employeeElectricity;
     }
 
@@ -44,14 +48,14 @@ class ElectricityUtil
 
         $prevMeasurement = 0;
         if ($prevRow != NULL) {
-            $prevMeasurement = $prevRow['measurement'];
+            $prevMeasurement = $prevRow->measurement;
         } else if (!empty($measurements)) {
-            $prevMeasurement = $measurements[0]['measurement'];
+            $prevMeasurement = $measurements[0]->measurement;
         }
 
         $usage = 0;
         if (!empty($measurements)) {
-            $usage = $measurements[count($measurements) - 1]['measurement'] - $prevMeasurement;
+            $usage = $measurements[count($measurements) - 1]->measurement - $prevMeasurement;
         }
 
         return $usage;
