@@ -61,6 +61,31 @@ class AttendanceUtil
         return round(($atSum['o']/60)/60, 2);
     }
 
+    public function getWorkedDays($employeeId, $startDate, $endDate)
+    {
+        $startTime = $startDate." 00:00:00";
+        $endTime = $endDate." 23:59:59";
+        $attendance = new Attendance();
+        $atts = $attendance->Find(
+            "employee = ? and in_time >= ? and out_time <= ?",
+            array($employeeId, $startTime, $endTime)
+        );
+
+        $curDay = '';
+        $daysCount = 0;
+        $objDump = print_r($atts, true);
+        foreach ($atts as &$att) {
+            $time = strtotime($att->in_time);
+            $dateStr = date('Y-m-d',$time);
+            if ($curDay != $dateStr) {
+                $curDay = $dateStr;
+                $daysCount++;
+            }
+        }
+
+        return $daysCount;
+    }
+
     public function getWeeklyBasedOvertimeSummary($employeeId, $startDate, $endDate)
     {
 

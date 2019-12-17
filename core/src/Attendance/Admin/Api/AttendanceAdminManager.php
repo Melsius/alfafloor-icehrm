@@ -125,5 +125,11 @@ class AttendanceAdminManager extends AbstractModuleManager
             '\\Attendance\\Admin\\Api\\AttendanceUtil',
             'getWeeklyBasedOvertimeHours'
         );
+        $this->addCalculationHook(
+            'AttendanceUtil_getWorkedDays',
+            'Total worked days from Attendance',
+            '\\Attendance\\Admin\\Api\\AttendanceUtil',
+            'getWorkedDays'
+        );
     }
 }
