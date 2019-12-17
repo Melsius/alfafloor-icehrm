@@ -1,18 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Thilina
- * Date: 8/13/17
- * Time: 6:56 PM
- */
-
 namespace Attendance\Common\Calculations;
 
 use Classes\SettingsManager;
+use Attendance\Common\Calculations\BasicOvertimeCalculator;
 
-class BasicOvertimeCalculator
+class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
-
     public function createAttendanceSummary($atts)
     {
 
