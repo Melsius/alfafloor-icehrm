@@ -50,6 +50,11 @@ modJsList['tabEmployeeElectricity'].setShowEdit(false);
 <?php }?>
 
 // incentive types
+modJsList['tabIncentiveTypes'] = new IncentiveTypesAdapter('IncentiveTypes');
+modJsList['tabIncentiveTypes'].setShowAddNew(true);
+modJsList['tabIncentiveTypes'].setShowDelete(true);
+modJsList['tabIncentiveTypes'].setShowEdit(true);
+
 // employee incentives
 
 var modJs = modJsList['tabEmployeeElectricity'];

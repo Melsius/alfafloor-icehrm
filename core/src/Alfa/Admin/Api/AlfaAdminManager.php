@@ -21,6 +21,7 @@ class AlfaAdminManager extends AbstractModuleManager
     public function setupModuleClassDefinitions()
     {
         $this->addModelClass('EmployeeElectricity');
+        $this->addModelClass('IncentiveTypes');
     }
     
     public function initCalculationHooks()
