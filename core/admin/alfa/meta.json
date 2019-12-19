@@ -1,0 +1,19 @@
+{
+    "label": "Alfa Dashboard",
+    "menu": "Employees",
+    "order": "9",
+    "icon": "fa-window-maximize",
+    "user_levels": [
+        "Admin",
+        "Manager"
+    ],
+    "permissions": {
+        "Manager": {
+            "Add Electricity Measurement": "No",
+            "Edit Electricity Measurement": "No",
+            "Delete Electricity Measurement": "No"
+        }
+    },
+    "model_namespace": "\\Alfa\\Common\\Model",
+    "manager": "\\Alfa\\Admin\\Api\\AlfaAdminManager"
+}

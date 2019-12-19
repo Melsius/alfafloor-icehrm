@@ -125,12 +125,12 @@ gulp.task('admin-js', (done) => {
   // we define our input files, which we want to have
   // bundled:
   const files = [
+    'alfa',
     'attendance',
     'company_structure',
     'dashboard',
     'data',
     'employees',
-    'electricity',
     'fieldnames',
     'jobs',
     'loans',

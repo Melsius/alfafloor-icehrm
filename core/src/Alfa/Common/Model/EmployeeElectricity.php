@@ -1,5 +1,5 @@
 <?php
-namespace Electricity\Common\Model;
+namespace Alfa\Common\Model;
 
 use Model\BaseModel;
 

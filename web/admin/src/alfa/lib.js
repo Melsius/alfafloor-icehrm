@@ -1,10 +1,10 @@
 import AdapterBase from '../../../api/AdapterBase';
 
 /*
- * ElectricityDashboardAdapter
+ * EmployeeElectricityAdapter
  */
 
-class ElectricityDashboardAdapter extends AdapterBase {
+class EmployeeElectricityAdapter extends AdapterBase {
   getDataMapping() {
     return [
       'id',
@@ -44,5 +44,5 @@ class ElectricityDashboardAdapter extends AdapterBase {
 }
 
 module.exports = {
-  ElectricityDashboardAdapter
+  EmployeeElectricityAdapter
 };

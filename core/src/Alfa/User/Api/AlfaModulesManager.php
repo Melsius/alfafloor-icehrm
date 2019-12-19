@@ -1,9 +1,9 @@
 <?php
-namespace Electricity\User\Api;
+namespace Alfa\User\Api;
 
 use Classes\AbstractModuleManager;
 
-class ElectricityModulesManager extends AbstractModuleManager
+class AlfaModulesManager extends AbstractModuleManager
 {
 
     public function initializeUserClasses()
