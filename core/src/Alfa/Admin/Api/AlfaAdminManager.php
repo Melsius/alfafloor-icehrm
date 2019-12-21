@@ -22,6 +22,7 @@ class AlfaAdminManager extends AbstractModuleManager
     {
         $this->addModelClass('EmployeeElectricity');
         $this->addModelClass('IncentiveTypes');
+        $this->addModelClass('EmployeeIncentives');
     }
     
     public function initCalculationHooks()
@@ -29,7 +30,7 @@ class AlfaAdminManager extends AbstractModuleManager
         $this->addCalculationHook(
             'EmployeeElectricity_getElectricityUsage',
             'Electricity Usage',
-            '\\Electricity\\Admin\\Api\\ElectricityUtil',
+            '\\Alfa\\Admin\\Api\\ElectricityUtil',
             'getElectricityUsage'
         );
     }

@@ -11,6 +11,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabEmployeeElectricity" href="#tabPageEmployeeElectricity"><?=t('Electricity')?></a></li>
 		<li><a id="tabIncentiveTypes" href="#tabPageIncentiveTypes"><?=t('Incentive Types')?></a></li>
+		<li><a id="tabEmployeeIncentives" href="#tabPageEmployeeIncentives"><?=t('Employee Incentives')?></a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -25,10 +26,15 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 		<div class="tab-pane" id="tabPageIncentiveTypes">
 			<div id="IncentiveTypes" class="reviewBlock" data-content="List" style="padding-left:5px;">
-
 			</div>
 			<div id="IncentiveTypesForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+			</div>
+        </div>
 
+		<div class="tab-pane" id="tabPageEmployeeIncentives">
+			<div id="EmployeeIncentives" class="reviewBlock" data-content="List" style="padding-left:5px;">
+			</div>
+			<div id="EmployeeIncentivesForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 			</div>
 		</div>
 	</div>
@@ -51,11 +57,15 @@ modJsList['tabEmployeeElectricity'].setShowEdit(false);
 
 // incentive types
 modJsList['tabIncentiveTypes'] = new IncentiveTypesAdapter('IncentiveTypes');
-modJsList['tabIncentiveTypes'].setShowAddNew(true);
-modJsList['tabIncentiveTypes'].setShowDelete(true);
-modJsList['tabIncentiveTypes'].setShowEdit(true);
+modJsList['tabIncentiveTypes'].setShowAddNew(false);
+modJsList['tabIncentiveTypes'].setShowDelete(false);
+modJsList['tabIncentiveTypes'].setShowEdit(false);
 
 // employee incentives
+modJsList['tabEmployeeIncentives'] = new EmployeeIncentivesAdapter('EmployeeIncentives');
+modJsList['tabEmployeeIncentives'].setShowAddNew(true);
+modJsList['tabEmployeeIncentives'].setShowDelete(true);
+modJsList['tabEmployeeIncentives'].setShowEdit(true);
 
 var modJs = modJsList['tabEmployeeElectricity'];
 

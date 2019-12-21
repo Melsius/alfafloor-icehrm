@@ -1,8 +1,8 @@
 <?php
 
-namespace Electricity\Admin\Api;
+namespace Alfa\Admin\Api;
 
-use Electricity\Common\Model\EmployeeElectricity;
+use Alfa\Common\Model\EmployeeElectricity;
 use Classes\SettingsManager;
 use Utils\LogManager;
 

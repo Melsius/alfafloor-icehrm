@@ -12,6 +12,7 @@ class EmployeeElectricityAdapter extends AdapterBase {
       'date',
       'measurement',
       'details',
+      'payroll'
     ];
   }
 
@@ -22,6 +23,7 @@ class EmployeeElectricityAdapter extends AdapterBase {
       { sTitle: 'Date' },
       { sTitle: 'Measurement (kWh)' },
       { sTitle: 'Details' },
+      { sTitle: 'Payroll' },
     ];
   }
 
@@ -38,7 +40,6 @@ class EmployeeElectricityAdapter extends AdapterBase {
   getFilters() {
     return [
       ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
-
     ];
   }
 }
@@ -72,7 +73,58 @@ class IncentiveTypesAdapter extends AdapterBase {
     ];
   }
 }
+
+/*
+ * EmployeeIncentivesAdapter
+ */
+
+class EmployeeIncentivesAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'employee',
+      'date',
+      'incentive_type',
+      'amount',
+      'pre_paid',
+      'details',
+      'payroll'
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Employee' },
+      { sTitle: 'Date' },
+      { sTitle: 'Incentive Type' },
+      { sTitle: 'Amount' },
+      { sTitle: 'Pre-paid' },
+      { sTitle: 'Details' },
+      { sTitle: 'Payroll' },
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
+      ['date', { label: 'Date', type: 'date', validation: ''}],
+      ['incentive_type', { label: 'Incentive Type', type: 'select2', 'remote-source': ['IncentiveTypes', 'id', 'name'] }],
+      ['amount', { label: 'Amount', type: 'text', validation: 'float' }],
+      ['pre_paid', { label: 'Pre-paid', type: 'select', source: [[0, 'No'], [1, 'Yes']], validation: '' }],
+      ['details', { label: 'Details', type: 'textarea', validation: 'none' }],
+    ];
+  }
+
+  getFilters() {
+    return [
+      ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
+    ];
+  }
+}
 module.exports = {
   EmployeeElectricityAdapter,
-  IncentiveTypesAdapter
+  IncentiveTypesAdapter,
+  EmployeeIncentivesAdapter
 };
