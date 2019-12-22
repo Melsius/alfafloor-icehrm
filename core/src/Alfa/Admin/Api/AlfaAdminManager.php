@@ -24,7 +24,7 @@ class AlfaAdminManager extends AbstractModuleManager
         $this->addModelClass('IncentiveTypes');
         $this->addModelClass('EmployeeIncentives');
     }
-    
+ 
     public function initCalculationHooks()
     {
         $this->addCalculationHook(
@@ -32,6 +32,30 @@ class AlfaAdminManager extends AbstractModuleManager
             'Electricity Usage',
             '\\Alfa\\Admin\\Api\\ElectricityUtil',
             'getElectricityUsage'
+        );
+        $this->addCalculationHook(
+            'EmployeeIncentives_getOutOfTownTotal',
+            'Incentives total: out-of-town',
+            '\\Alfa\\Admin\\Api\\IncentivesUtil',
+            'getOutOfTownTotal'
+        );
+        $this->addCalculationHook(
+            'EmployeeIncentives_getForkliftContainerTotal',
+            'Incentives total: forklift container unload',
+            '\\Alfa\\Admin\\Api\\IncentivesUtil',
+            'getForkliftContainerTotal'
+        );
+        $this->addCalculationHook(
+            'EmployeeIncentives_getSecondTripTotal',
+            'Incentives total: second delivery trip',
+            '\\Alfa\\Admin\\Api\\IncentivesUtil',
+            'getSecondDeliveryTripTotal'
+        );
+        $this->addCalculationHook(
+            'EmployeeIncentives_getPrePaidTotal',
+            'Incentives total: pre-paid total',
+            '\\Alfa\\Admin\\Api\\IncentivesUtil',
+            'getPrePaidTotal'
         );
     }
 }
