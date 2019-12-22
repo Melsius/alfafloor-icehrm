@@ -12,6 +12,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 		<li class="active"><a id="tabEmployeeElectricity" href="#tabPageEmployeeElectricity"><?=t('Electricity')?></a></li>
 		<li><a id="tabIncentiveTypes" href="#tabPageIncentiveTypes"><?=t('Incentive Types')?></a></li>
 		<li><a id="tabEmployeeIncentives" href="#tabPageEmployeeIncentives"><?=t('Employee Incentives')?></a></li>
+		<li><a id="tabDeductionTypes" href="#tabPageDeductionTypes"><?=t('Deduction Types')?></a></li>
+		<li><a id="tabEmployeeDeductions" href="#tabPageEmployeeDeductions"><?=t('Employee Deductions')?></a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -35,6 +37,20 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 			<div id="EmployeeIncentives" class="reviewBlock" data-content="List" style="padding-left:5px;">
 			</div>
 			<div id="EmployeeIncentivesForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+			</div>
+        </div>
+
+		<div class="tab-pane" id="tabPageDeductionTypes">
+			<div id="DeductionTypes" class="reviewBlock" data-content="List" style="padding-left:5px;">
+			</div>
+			<div id="DeductionTypesForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+			</div>
+        </div>
+
+		<div class="tab-pane" id="tabPageEmployeeDeductions">
+			<div id="EmployeeDeductions" class="reviewBlock" data-content="List" style="padding-left:5px;">
+			</div>
+			<div id="EmployeeDeductionsForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 			</div>
 		</div>
 	</div>
@@ -63,9 +79,23 @@ modJsList['tabIncentiveTypes'].setShowEdit(false);
 
 // employee incentives
 modJsList['tabEmployeeIncentives'] = new EmployeeIncentivesAdapter('EmployeeIncentives');
+// TODO: remove edid/delete button for rows with a payroll
 modJsList['tabEmployeeIncentives'].setShowAddNew(true);
 modJsList['tabEmployeeIncentives'].setShowDelete(true);
 modJsList['tabEmployeeIncentives'].setShowEdit(true);
+
+// deduction types
+modJsList['tabDeductionTypes'] = new DeductionTypesAdapter('DeductionTypes');
+modJsList['tabDeductionTypes'].setShowAddNew(false);
+modJsList['tabDeductionTypes'].setShowDelete(false);
+modJsList['tabDeductionTypes'].setShowEdit(false);
+
+// employee deductions 
+modJsList['tabEmployeeDeductions'] = new EmployeeDeductionsAdapter('EmployeeDeductions');
+// TODO: remove edid/delete button for rows with a payroll
+modJsList['tabEmployeeDeductions'].setShowAddNew(true);
+modJsList['tabEmployeeDeductions'].setShowDelete(true);
+modJsList['tabEmployeeDeductions'].setShowEdit(true);
 
 var modJs = modJsList['tabEmployeeElectricity'];
 

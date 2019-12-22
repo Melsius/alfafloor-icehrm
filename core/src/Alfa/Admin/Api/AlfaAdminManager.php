@@ -23,6 +23,8 @@ class AlfaAdminManager extends AbstractModuleManager
         $this->addModelClass('EmployeeElectricity');
         $this->addModelClass('IncentiveTypes');
         $this->addModelClass('EmployeeIncentives');
+        $this->addModelClass('DeductionTypes');
+        $this->addModelClass('EmployeeDeductions');
     }
  
     public function initCalculationHooks()
@@ -56,6 +58,18 @@ class AlfaAdminManager extends AbstractModuleManager
             'Incentives total: pre-paid total',
             '\\Alfa\\Admin\\Api\\IncentivesUtil',
             'getPrePaidTotal'
+        );
+        $this->addCalculationHook(
+            'EmployeeDeductions_getAdvancesTotal',
+            'Deductions: Advances total',
+            '\\Alfa\\Admin\\Api\\DeductionsUtil',
+            'getAdvancesTotal'
+        );
+        $this->addCalculationHook(
+            'EmployeeDeductions_getGuaranteeTotal',
+            'Deductions: Guarantee total',
+            '\\Alfa\\Admin\\Api\\DeductionsUtil',
+            'getGuaranteeTotal'
         );
     }
 }

@@ -123,8 +123,87 @@ class EmployeeIncentivesAdapter extends AdapterBase {
     ];
   }
 }
+
+/*
+ * DeductionTypesAdapter
+ */
+
+class DeductionTypesAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'name',
+      'description'
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Name' },
+      { sTitle: 'Description' }
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['name', { label: 'Name', type: 'text', validation: ''}],
+      ['description', { label: 'Description', type: 'textarea', validation: 'none' }]
+    ];
+  }
+}
+
+/*
+ * EmployeeDeductionsAdapter
+ */
+
+class EmployeeDeductionsAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'employee',
+      'date',
+      'deduction_type',
+      'amount',
+      'details',
+      'payroll'
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Employee' },
+      { sTitle: 'Date' },
+      { sTitle: 'Deduction Type' },
+      { sTitle: 'Amount' },
+      { sTitle: 'Details' },
+      { sTitle: 'Payroll' },
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
+      ['date', { label: 'Date', type: 'date', validation: ''}],
+      ['deduction_type', { label: 'Deduction Type', type: 'select2', 'remote-source': ['DeductionTypes', 'id', 'name'] }],
+      ['amount', { label: 'Amount', type: 'text', validation: 'float' }],
+      ['details', { label: 'Details', type: 'textarea', validation: 'none' }],
+    ];
+  }
+
+  getFilters() {
+    return [
+      ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
+    ];
+  }
+}
 module.exports = {
   EmployeeElectricityAdapter,
   IncentiveTypesAdapter,
-  EmployeeIncentivesAdapter
+  EmployeeIncentivesAdapter,
+  DeductionTypesAdapter,
+  EmployeeDeductionsAdapter
 };
