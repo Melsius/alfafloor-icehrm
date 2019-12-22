@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 21, 2019 at 03:16 PM
+-- Generation Time: Dec 22, 2019 at 09:40 PM
 -- Server version: 5.7.28-0ubuntu0.18.04.4
 -- PHP Version: 7.2.24-0ubuntu0.18.04.1
 
@@ -11,12 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `icehrmdb`
@@ -31,6 +25,23 @@ INSERT INTO `Deductions` (`id`, `name`, `componentType`, `component`, `payrollCo
 (3, 'Monthly to Daily wage', '[]', '[]', NULL, '[{\"lowerCondition\":\"gte\",\"lowerLimit\":\"0\",\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 30\",\"id\":\"rangeAmounts_1\"}]', 1),
 (4, 'Monthly to Hourly wage', '[]', '[]', NULL, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 30\",\"id\":\"rangeAmounts_1\"},{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 8\",\"id\":\"rangeAmounts_2\"}]', NULL),
 (5, 'Electricity usage (kWh) to cost', '[]', '[]', 8, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X * 5\",\"id\":\"rangeAmounts_1\"}]', 1);
+
+--
+-- Dumping data for table `DeductionTypes`
+--
+
+INSERT INTO `DeductionTypes` (`id`, `name`, `description`) VALUES
+(1, 'Early withdrawal', 'An early withdrawal on the next payment period'),
+(2, 'Guarantee', 'Guarantee deduction withheld until a fixed maximum');
+
+--
+-- Dumping data for table `IncentiveTypes`
+--
+
+INSERT INTO `IncentiveTypes` (`id`, `name`, `description`) VALUES
+(1, 'Out-of-town', 'Incentive for heading out of town on a business trip'),
+(2, 'Forklift container unload', 'Incentive rewarded for operating the forklift when unloading a container'),
+(3, 'Second delivery trip', 'Incentive awarded for making a second delivery trip on one day');
 
 --
 -- Dumping data for table `PayrollColumns`
@@ -55,17 +66,14 @@ INSERT INTO `PayrollColumns` (`id`, `name`, `calculation_hook`, `salary_componen
 (20, 'Water usage deduction', NULL, '[\"12\"]', '[]', '[]', '[]', 32, 'Yes', 'Yes', '0', '', '', NULL),
 (21, 'Extra inhabitant deduction', NULL, '[\"13\"]', '[]', '[]', '[]', 33, 'Yes', 'Yes', '0', '', '', NULL),
 (22, 'Sanitary cleaning deduction', NULL, '[\"14\"]', '[]', '[]', '[]', 34, 'Yes', 'Yes', '0', '', '', NULL),
-(23, 'Early withdrawal deduction (TODO)', NULL, '[]', '[]', '[]', '[]', 35, 'Yes', 'Yes', '0', '', '', NULL),
-(24, 'Guarantee deduction', NULL, '[\"15\"]', '[]', '[]', '[]', 36, 'Yes', 'Yes', '0', '', '', NULL),
+(23, 'Early withdrawal deduction', 'EmployeeDeductions_getAdvancesTotal', '[]', '[]', '[]', '[]', 35, 'Yes', 'Yes', '0', '', '', NULL),
+(24, 'Guarantee deduction', 'EmployeeDeductions_getGuaranteeTotal', '[\"15\"]', '[]', '[]', '[]', 36, 'No', 'Yes', '0', '', '', NULL),
 (25, 'Deductions total', NULL, '[]', '[]', '[]', '[\"19\",\"20\",\"21\",\"22\",\"23\",\"24\"]', 49, 'Yes', 'Yes', '0', '', '', NULL),
-(26, 'Out-of-town incentive (TODO)', NULL, '[]', '[]', '[]', '[]', 50, 'Yes', 'Yes', '0', '', '', NULL),
-(27, 'Forklift contained unload incentive (TODO)', NULL, '[]', '[]', '[]', '[]', 51, 'No', 'Yes', '0', '', '', NULL),
-(28, 'Second delivery trip incentive (TODO)', NULL, '[]', '[]', '[]', '[]', 52, 'Yes', 'Yes', '0', '', '', NULL),
-(29, 'Pre-paid incentives total', NULL, '[]', '[]', '[\"26\"]', '[]', 59, 'Yes', 'Yes', '0', '', '', NULL),
+(26, 'Out-of-town incentive', 'EmployeeIncentives_getOutOfTownTotal', '[]', '[]', '[]', '[]', 50, 'No', 'Yes', '0', '', '', NULL),
+(27, 'Forklift contained unload incentive', 'EmployeeIncentives_getForkliftContainerTotal', '[]', '[]', '[]', '[]', 51, 'No', 'Yes', '0', '', '', NULL),
+(28, 'Second delivery trip incentive', 'EmployeeIncentives_getSecondTripTotal', '[]', '[]', '[]', '[]', 52, 'Yes', 'Yes', '0', '', '', NULL),
+(29, 'Pre-paid incentives total', 'EmployeeIncentives_getPrePaidTotal', '[]', '[]', '[]', '[]', 59, 'No', 'Yes', '0', '', '', NULL),
 (30, 'Incentives total', NULL, '[]', '[]', '[\"27\",\"28\"]', '[\"26\"]', 60, 'Yes', 'Yes', '0', '', '', NULL),
-(31, 'To be received', NULL, '[]', '[]', '[\"12\",\"13\",\"18\",\"30\"]', '[\"25\"]', 99, 'Yes', 'Yes', '0', '', '', NULL);
+(31, 'To be received', NULL, '[]', '[]', '[\"12\",\"13\",\"18\",\"30\",\"25\"]', '[]', 99, 'Yes', 'Yes', '0', '', '', NULL);
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
