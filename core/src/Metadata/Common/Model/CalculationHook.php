@@ -11,9 +11,11 @@ namespace Metadata\Common\Model;
 use Classes\BaseService;
 use Model\BaseModel;
 
-class CalculationHook extends BaseModel
+class CalculationHook
 {
     public $table = 'CalculationHooks';
+    public $name = '';
+    public $code = '';
 
     public function getAdminAccess()
     {
@@ -25,6 +27,26 @@ class CalculationHook extends BaseModel
         return array();
     }
 
+    public function getUserOnlyMeAccess()
+    {
+        return array("get","element");
+    }
+
+    public function getUserOnlyMeSwitchedAccess()
+    {
+        return $this->getUserOnlyMeAccess();
+    }
+
+    public function getUserOnlyMeAccessField()
+    {
+        return "employee";
+    }
+
+    public function getUserOnlyMeAccessRequestField()
+    {
+        return "employee";
+    }
+
     // @codingStandardsIgnoreStart
     function Find($whereOrderBy, $bindarr = false, $pkeysArr = false, $extra = array())
     {
@@ -34,6 +56,11 @@ class CalculationHook extends BaseModel
     function Load($where = null, $bindarr = false)
     {
         return BaseService::getInstance()->getCalculationHook($bindarr[0]);
+    }
+
+    static function SetDatabaseAdapter($arg)
+    {
+
     }
     // @codingStandardsIgnoreEnd
 }

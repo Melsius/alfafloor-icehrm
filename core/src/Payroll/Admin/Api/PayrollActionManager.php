@@ -83,7 +83,7 @@ class PayrollActionManager extends SubActionManager
                 "id in (".implode(",", json_decode($col->salary_components, true)).")",
                 array()
             );
-            LogManager::getInstance()->info("salary components:".$salaryComponents);
+            LogManager::getInstance()->info("salary components:");
             foreach ($salaryComponents as $salaryComponent) {
                 $sum += $this->getTotalForEmployeeSalaryByComponent($employeeId, $salaryComponent->id);
             }

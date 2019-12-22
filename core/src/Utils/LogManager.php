@@ -39,6 +39,11 @@ class LogManager
         $this->log->addDebug($message);
     }
 
+    public function warning($message)
+    {
+        $this->log->addWarning($message);
+    }
+
     public function error($message)
     {
         $this->log->addError($message);

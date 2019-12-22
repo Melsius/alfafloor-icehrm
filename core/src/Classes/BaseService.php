@@ -151,7 +151,7 @@ class BaseService
             $newList[] = $this->cleanUpAdoDB($listObj);
         }
 
-        if (!empty($mappingStr) && count($map)>0) {
+        if (!empty($mappingStr) && $map != NULL) {
             $list = $this->populateMapping($newList, $map);
         }
 
@@ -512,7 +512,7 @@ class BaseService
 
         $list = $processedList;
 
-        if (!empty($mappingStr) && count($map)>0) {
+        if (!empty($mappingStr) && $map != NULL) {
             $list = $this->populateMapping($list, $map);
         }
 
@@ -1526,6 +1526,12 @@ class BaseService
 
     public function getCalculationHook($code)
     {
+        if ($code == "") {
+            return NULL;
+        }
+        if (!array_key_exists($code, $this->calculationHooks)) {
+            LogManager::getInstance()->warning("Unknown calculationhook ".$code);
+        }
         return $this->calculationHooks[$code];
     }
 
