@@ -1,8 +1,8 @@
 <?php
 namespace unit;
 
-use Electricity\Admin\Api\ElectricityUtil;
-use Electricity\Common\Model\EmployeeElectricity;
+use Alfa\Admin\Api\ElectricityUtil;
+use Alfa\Common\Model\EmployeeElectricity;
 use Classes\BaseService;
 
 class EmployeeElectricityUnit extends \TestTemplate
@@ -32,8 +32,8 @@ class EmployeeElectricityUnit extends \TestTemplate
         $stub->method('Find')
             ->will($this->onConsecutiveCalls([],
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
-					['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
 			]));
 
         echo get_class($stub);
@@ -47,11 +47,11 @@ class EmployeeElectricityUnit extends \TestTemplate
         $stub->method('Find')
             ->will($this->onConsecutiveCalls(
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
 				],
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
-					['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
 			]));
 
         echo get_class($stub);
@@ -65,12 +65,12 @@ class EmployeeElectricityUnit extends \TestTemplate
         $stub->method('Find')
             ->will($this->onConsecutiveCalls(
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
 				],
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
-					['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
-					['id' => 1, 'employee' => 1, 'measurement' => 201, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 200, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 201, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => '']
 			]));
 
         echo get_class($stub);
@@ -84,7 +84,7 @@ class EmployeeElectricityUnit extends \TestTemplate
         $stub->method('Find')
             ->will($this->onConsecutiveCalls(
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
 				],
 				[]));
 
@@ -99,10 +99,10 @@ class EmployeeElectricityUnit extends \TestTemplate
         $stub->method('Find')
             ->will($this->onConsecutiveCalls(
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 99, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
 				],
 				[
-					['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
+					(object)['id' => 1, 'employee' => 1, 'measurement' => 100, 'date' => '2010-01-01', 'is_paid' => 0, 'details' => ''],
 				]));
 
         echo get_class($stub);
