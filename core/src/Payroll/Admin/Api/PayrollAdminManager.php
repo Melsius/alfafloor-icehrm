@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Thilina
- * Date: 8/19/17
- * Time: 4:18 PM
- */
-
 namespace Payroll\Admin\Api;
 
+use Payroll\Rest\PayrollRestEndPoint;
 use Classes\AbstractModuleManager;
 
 class PayrollAdminManager extends AbstractModuleManager
@@ -37,5 +31,13 @@ class PayrollAdminManager extends AbstractModuleManager
         $this->addModelClass('DeductionGroup');
         $this->addModelClass('PayslipTemplate');
         $this->addModelClass('PayrollCalculations');
+    }
+    
+    public function setupRestEndPoints()
+    {
+        \Classes\Macaw::get(REST_API_PATH.'payroll/salary_group/(:num)', function ($group) {
+            $restEndPoint = new PayrollRestEndPoint();
+            $restEndPoint->process('listSalaryGroup', $group);
+        });
     }
 }
