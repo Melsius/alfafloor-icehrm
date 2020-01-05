@@ -254,6 +254,24 @@ class AttendanceRestEndPoint extends RestEndPoint
         return $attendance;
     }
 
+    public function getAllOpenPunch($user, $date)
+    {
+        if ($date === 'today') {
+            $date = explode(' ', $this->getServerTime())[0];
+        } elseif (strpos($date, ' ')) {
+            $date = explode(' ', $date)[0];
+        }
+
+        $attendance = new Attendance();
+        $attendance->Load(
+            "DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ? and (out_time is NULL 
+            or out_time = '0000-00-00 00:00:00')",
+            array($date)
+        );
+
+        return $attendance;
+    }
+
     public function getOpenPunch($user, $employeeId, $date)
     {
         if ($date === 'today') {

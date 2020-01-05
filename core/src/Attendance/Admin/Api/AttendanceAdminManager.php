@@ -64,6 +64,11 @@ class AttendanceAdminManager extends AbstractModuleManager
             $restEndPoint->process('getOpenPunch', [$employeeId, $date]);
         });
 
+        \Classes\Macaw::get(REST_API_PATH.'attendance/open-punch-in/(:any)', function ($date) {
+            $restEndPoint = new AttendanceRestEndPoint();
+            $restEndPoint->process('getAllOpenPunch', [$date]);
+        });
+
         \Classes\Macaw::post(REST_API_PATH.'attendance/punch-out/(:num)', function ($pathParams) {
             $restEndPoint = new AttendanceRestEndPoint();
             $restEndPoint->process('punchOut', $pathParams);
