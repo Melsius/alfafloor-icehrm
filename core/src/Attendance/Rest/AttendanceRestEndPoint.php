@@ -261,15 +261,21 @@ class AttendanceRestEndPoint extends RestEndPoint
         } elseif (strpos($date, ' ')) {
             $date = explode(' ', $date)[0];
         }
-
+        
         $attendance = new Attendance();
-        $attendance->Load(
-            "DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ? and (out_time is NULL 
-            or out_time = '0000-00-00 00:00:00')",
+        $attendanceList = $attendance->Find(
+            "DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ? and (out_time is NULL)",
             array($date)
         );
 
-        return $attendance;
+        foreach ($attendanceList as &$attendance) {
+            $attendance = $this->cleanObject($attendance);
+        }
+        return new IceResponse(
+            IceResponse::SUCCESS,
+            ['attendance' => $attendanceList, 'time' => $this->getServerTime()],
+            200
+        );
     }
 
     public function getOpenPunch($user, $employeeId, $date)
