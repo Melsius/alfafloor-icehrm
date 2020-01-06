@@ -403,7 +403,11 @@ class AttendanceRestEndPoint extends RestEndPoint
 
         $attendance->employee = $employeeId;
         $attendance->note = $note;
-        $attendance->automatic_event = $automatic_event;
+        if (is_null($automatic_event)) {
+            $attendance->automatic_event = false;
+        } else {
+            $attendance->automatic_event = $automatic_event;
+        }
         $ok = $attendance->Save();
         if (!$ok) {
             LogManager::getInstance()->info($attendance->ErrorMsg());
