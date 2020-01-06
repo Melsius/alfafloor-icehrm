@@ -182,7 +182,8 @@ class AttendanceRestEndPoint extends RestEndPoint
             null,
             $body['latitude'],
             $body['longitude'],
-            NetworkUtils::getClientIp()
+            NetworkUtils::getClientIp(),
+            $body['automatic_event']
         );
 
         if ($response->getStatus() === IceResponse::SUCCESS) {
@@ -226,7 +227,8 @@ class AttendanceRestEndPoint extends RestEndPoint
             $attendance->id,
             $body['latitude'],
             $body['longitude'],
-            NetworkUtils::getClientIp()
+            NetworkUtils::getClientIp(),
+            $body['automatic_event']
         );
 
         if ($response->getStatus() === IceResponse::SUCCESS) {
@@ -309,7 +311,8 @@ class AttendanceRestEndPoint extends RestEndPoint
         $id = null,
         $latitude = null,
         $longitude = null,
-        $ip = null
+        $ip = null,
+        $automatic_event = false
     ) {
         $employee = BaseService::getInstance()->getElement(
             'Employee',
@@ -326,7 +329,7 @@ class AttendanceRestEndPoint extends RestEndPoint
             $outDate = $outDateArr[0];
         }
 
-        //check if dates are differnet
+        //check if dates are different
         if (!empty($outDate) && $inDate != $outDate) {
             return new IceResponse(
                 IceResponse::ERROR,
@@ -400,6 +403,7 @@ class AttendanceRestEndPoint extends RestEndPoint
 
         $attendance->employee = $employeeId;
         $attendance->note = $note;
+        $attendance->automatic_event = $automatic_event;
         $ok = $attendance->Save();
         if (!$ok) {
             LogManager::getInstance()->info($attendance->ErrorMsg());
