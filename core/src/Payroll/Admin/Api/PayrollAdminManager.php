@@ -35,9 +35,9 @@ class PayrollAdminManager extends AbstractModuleManager
     
     public function setupRestEndPoints()
     {
-        \Classes\Macaw::get(REST_API_PATH.'payroll/salary_group/(:num)', function ($group) {
+        \Classes\Macaw::get(REST_API_PATH.'payroll/salary_group/(:any)', function ($group) {
             $restEndPoint = new PayrollRestEndPoint();
-            $restEndPoint->process('listSalaryGroup', $group);
+            $restEndPoint->process('listSalaryGroupByName', $group);
         });
     }
 }

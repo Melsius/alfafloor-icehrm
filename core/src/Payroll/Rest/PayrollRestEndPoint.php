@@ -2,6 +2,7 @@
 namespace Payroll\Rest;
 
 use Salary\Common\Model\PayrollEmployee;
+use Payroll\Common\Model\DeductionGroup;
 use Classes\BaseService;
 use Classes\Data\Query\DataQuery;
 use Classes\Data\Query\Filter;
@@ -17,7 +18,26 @@ use Utils\NetworkUtils;
 
 class PayrollRestEndPoint extends RestEndPoint
 {
-    public function listSalaryGroup(User $user, $group)
+    public function listSalarygroupById(User $user, $groupId)
+    {
+        if (empty($groupId)) {
+            return new IceResponse(IceResponse::ERROR, "No groupId provided", 404);
+        }
+
+        if ($user->user_level !== 'Admin') {
+            return new IceResponse(IceResponse::ERROR, "Permission denied", 403);
+        }
+
+        $payrollEmployee = new PayrollEmployee();
+        $employeeList = $payrollEmployee->Find('deduction_group = ?', array($groupId));
+
+        foreach ($employeeList as &$payrollEmployee) {
+            $payrollEmployee = $this->cleanObject($payrollEmployee);
+        }
+        return new IceResponse(IceResponse::SUCCESS, $employeeList);
+    }
+
+    public function listSalarygroupByName(User $user, $group)
     {
         if (empty($group)) {
             return new IceResponse(IceResponse::ERROR, "No group provided", 404);
@@ -27,12 +47,12 @@ class PayrollRestEndPoint extends RestEndPoint
             return new IceResponse(IceResponse::ERROR, "Permission denied", 403);
         }
 
-        $payrollEmployee = new PayrollEmployee();
-        $employeeList = $payrollEmployee->Find('deduction_group = ?', array($group));
-
-        foreach ($employeeList as &$payrollEmployee) {
-            $payrollEmployee = $this->cleanObject($payrollEmployee);
+        $deductionGroup = new DeductionGroup();
+        $deductionGroup->Load('name = ', array($group));
+        if ($deductionGroup->id == NULL) {
+            return new IceResponse(IceResponse::ERROR, "Group not found", 404);
         }
-        return new IceResponse(IceResponse::SUCCESS, $employeeList);
+
+        return $this->listSalarygroupById($user, $deductionGroup->id);
     }
 }
