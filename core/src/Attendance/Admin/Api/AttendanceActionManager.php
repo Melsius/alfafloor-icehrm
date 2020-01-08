@@ -97,6 +97,7 @@ class AttendanceActionManager extends SubActionManager
 
         $attendance->employee = $req->employee;
         $attendance->note = $note;
+        $attendance->automatic_event = false;
         $ok = $attendance->Save();
         if (!$ok) {
             LogManager::getInstance()->info($attendance->ErrorMsg());

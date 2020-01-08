@@ -142,6 +142,7 @@ class AttendanceActionManager extends SubActionManager
             $openPunch->image_in = $req->image;
             $openPunch->employee = $employee->id;
             $openPunch->in_ip = NetworkUtils::getClientIp();
+            $openPunch->automatic_event = false;
             $this->baseService->audit(IceConstants::AUDIT_ACTION, "Punch In \ time:".$openPunch->in_time);
         }
         $ok = $openPunch->Save();
