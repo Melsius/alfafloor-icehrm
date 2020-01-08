@@ -19,6 +19,7 @@ class AttendanceAdapter extends AdapterBase {
       'in_time',
       'out_time',
       'note',
+      'automatic_event'
     ];
   }
 
@@ -29,6 +30,7 @@ class AttendanceAdapter extends AdapterBase {
       { sTitle: 'Time-In' },
       { sTitle: 'Time-Out' },
       { sTitle: 'Note' },
+      { sTitle: 'Automatic Event' },
     ];
   }
 
@@ -41,6 +43,7 @@ class AttendanceAdapter extends AdapterBase {
       ['in_time', { label: 'Time-In', type: 'datetime' }],
       ['out_time', { label: 'Time-Out', type: 'datetime', validation: 'none' }],
       ['note', { label: 'Note', type: 'textarea', validation: 'none' }],
+      ['automatic_event', { label: 'Automatic Event', type: 'select', source: [[0, 'False']], validation: '' }],
     ];
   }
 
