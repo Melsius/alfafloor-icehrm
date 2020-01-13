@@ -37,7 +37,6 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
         $salaryGroup = new DeductionGroup();
         $salaryGroup->Load('id = ?', $payrollEmployee->deduction_group);
-
         if ($salaryGroup->name == 'Sales' || strpos(strtolower($salaryGroup->name), "off-site") !== false) {
             $this->offsiteEmployee = true;
         }
@@ -79,6 +78,12 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
                 $prevAtEntry = $atEntry;
             }
+            if ($curDate != '') {
+                // Calculate time for the remaining date
+                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundTimeStr($firstAtEntry->in_time);
+                $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
+            }
+
         } else {
             foreach ($atts as $atEntry) {
                 if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {
@@ -115,9 +120,14 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $result['t'] += $time;
         }
         if ($this->totalTimeInPeriod <= $result['t']) {
-            $result['o'] = $result['t'] - $this->totalTimeInPeriod;
+            if (!$this->offsiteEmployee) {
+                $result['o'] = $result['t'] - $this->totalTimeInPeriod;
+                $result['r'] = $result['t'] - $result['o'];
+            } else {
+                // Overtime is not applicable
+                $result['r'] = $this->totalTimeInPeriod;
+            }
         }
-        $result['r'] = $result['t'] - $result['o'];
 
         return $result;
     }

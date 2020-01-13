@@ -17,14 +17,25 @@ SET time_zone = "+00:00";
 --
 
 --
+-- Dumping data for table `DeductionGroup`
+--
+
+INSERT INTO `DeductionGroup` (`id`, `name`, `description`) VALUES
+(1, 'Regular On-site (รายเดือน)', 'พนักงานรายเดือน - ประจำออฟฟิส'),
+(2, 'Freelancers Off-site (รายวัน)', 'พนักงานรายวัน - ออกหน้างาน'),
+(3, 'Sales', 'พนักงานขาย'),
+(4, 'Regular Off-site (รายเดือน)', 'พนักงานรายเดือน - ออกหน้างาน'),
+(5, 'Freelancers On-site (รายวัน)', 'พนักงานรายงัน - ประจำออฟฟิส');
+
+--
 -- Dumping data for table `Deductions`
 --
 
 INSERT INTO `Deductions` (`id`, `name`, `componentType`, `component`, `payrollColumn`, `rangeAmounts`, `deduction_group`) VALUES
-(2, 'Tax', '[]', '[]', 5, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X * 0.21\",\"id\":\"rangeAmounts_1\"}]', 1),
-(3, 'Monthly to Daily wage', '[]', '[]', NULL, '[{\"lowerCondition\":\"gte\",\"lowerLimit\":\"0\",\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 30\",\"id\":\"rangeAmounts_1\"}]', 1),
+(2, 'Tax', '[]', '[]', 5, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X * 0.21\",\"id\":\"rangeAmounts_1\"}]', NULL),
+(3, 'Monthly to Daily wage', '[]', '[]', NULL, '[{\"lowerCondition\":\"gte\",\"lowerLimit\":\"0\",\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 30\",\"id\":\"rangeAmounts_1\"}]', NULL),
 (4, 'Monthly to Hourly wage', '[]', '[]', NULL, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 30\",\"id\":\"rangeAmounts_1\"},{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X / 8\",\"id\":\"rangeAmounts_2\"}]', NULL),
-(5, 'Electricity usage (kWh) to cost', '[]', '[]', 8, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X * 5\",\"id\":\"rangeAmounts_1\"}]', 1);
+(5, 'Electricity usage (kWh) to cost', '[]', '[]', 8, '[{\"lowerCondition\":\"No Lower Limit\",\"lowerLimit\":0,\"upperCondition\":\"No Upper Limit\",\"upperLimit\":0,\"amount\":\"X * 5\",\"id\":\"rangeAmounts_1\"}]', NULL);
 
 --
 -- Dumping data for table `DeductionTypes`
@@ -75,5 +86,7 @@ INSERT INTO `PayrollColumns` (`id`, `name`, `calculation_hook`, `salary_componen
 (29, 'Pre-paid incentives total', 'EmployeeIncentives_getPrePaidTotal', '[]', '[]', '[]', '[]', 59, 'No', 'Yes', '0', '', '', NULL),
 (30, 'Incentives total', NULL, '[]', '[]', '[\"27\",\"28\"]', '[\"26\"]', 60, 'Yes', 'Yes', '0', '', '', NULL),
 (31, 'To be received', NULL, '[]', '[]', '[\"12\",\"13\",\"18\",\"30\",\"25\"]', '[]', 99, 'Yes', 'Yes', '0', '', '', NULL);
-COMMIT;
 
+UPDATE `Settings` SET `value` = 'AlfaOvertimeCalculator' WHERE `Settings`.`name` = 'Attendance: Overtime Calculation Class';
+
+COMMIT;
