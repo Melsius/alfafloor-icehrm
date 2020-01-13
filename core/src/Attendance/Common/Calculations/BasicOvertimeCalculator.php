@@ -14,11 +14,13 @@ class BasicOvertimeCalculator
 {
     private $startDateStr;
     private $endDateStr;
+    private $employeeId;
 
-    function __construct($startDateStr, $endDateStr)
+    function __construct($employeeId, $startDateStr, $endDateStr)
     {
         $this->startDateStr = $startDateStr;
         $this->endDateStr = $endDateStr;
+        $this->employeeId = $employeeId;
     }
 
     public function createAttendanceSummary($atts)

@@ -3,7 +3,8 @@ namespace Attendance\Common\Calculations;
 
 use Classes\SettingsManager;
 use Attendance\Common\Calculations\BasicOvertimeCalculator;
-
+use Salary\Common\Model\PayrollEmployee;
+use Payroll\Common\Model\DeductionGroup;
 
 class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
@@ -11,12 +12,14 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
     const HOURSBYDAY = [
         8, 8, 8, 8, 8, 7, 7
     ];
+    const BREAKSECONDS = 60*60;
 
     private $totalTimeInPeriod = 0;
+    private $offsiteEmployee = false;
 
-    function __construct($startDateStr, $endDateStr)
+    function __construct($employeeId, $startDateStr, $endDateStr)
     {
-        parent::__construct($startDateStr, $endDateStr);
+        parent::__construct($employeeId, $startDateStr, $endDateStr);
         $date = strtotime($startDateStr);
         $endDate = strtotime($endDateStr);
 
@@ -27,6 +30,16 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             }
             $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
             $date = strtotime("+1 day", $date); 
+        }
+
+        $payrollEmployee = new PayrollEmployee();
+        $payrollEmployee->Load('employee = ?', array($employeeId));
+
+        $salaryGroup = new DeductionGroup();
+        $salaryGroup->Load('id = ?', $payrollEmployee->deduction_group);
+
+        if ($salaryGroup->name == 'Sales' || strpos(strtolower($salaryGroup->name), "off-site") !== false) {
+            $this->offsiteEmployee = true;
         }
     }
 
@@ -42,23 +55,49 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
         $atTimeByDay = array();
 
-        foreach ($atts as $atEntry) {
-            if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {
-                continue;
+        if ($this->offsiteEmployee) {
+            $curDate = '';
+            $inTime = NULL;
+            $prevAtEntry = NULL;
+            foreach ($atts as $atEntry) {
+                if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {
+                    continue;
+                }
+
+                $atDate = date("Y-m-d", strtotime($atEntry->in_time));
+
+                if ($curDate != $atDate) {
+                    if ($curDate != '') {
+                        // Calculate time for curDate
+                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundTimeStr($firstAtEntry->in_time);
+                        $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
+                    }
+                    // Update loop variables
+                    $curDate = $atDate;
+                    $firstAtEntry = $atEntry;
+                }
+
+                $prevAtEntry = $atEntry;
             }
+        } else {
+            foreach ($atts as $atEntry) {
+                if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {
+                    continue;
+                }
 
-            $atDate = date("Y-m-d", strtotime($atEntry->in_time));
+                $atDate = date("Y-m-d", strtotime($atEntry->in_time));
 
-            if (!isset($atTimeByDay[$atDate])) {
-                $atTimeByDay[$atDate]   = 0;
+                if (!isset($atTimeByDay[$atDate])) {
+                    $atTimeByDay[$atDate] = 0;
+                }
+
+                $diff = $this->roundTimeStr($atEntry->out_time) - $this->roundTimeStr($atEntry->in_time);
+                if ($diff < 0) {
+                    $diff = 0;
+                }
+
+                $atTimeByDay[$atDate] += $diff;
             }
-
-            $diff = $this->roundTimeStr($atEntry->out_time) - $this->roundTimeStr($atEntry->in_time);
-            if ($diff < 0) {
-                $diff = 0;
-            }
-
-            $atTimeByDay[$atDate] += $diff;
         }
 
         return $atTimeByDay;
@@ -80,7 +119,6 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         }
         $result['r'] = $result['t'] - $result['o'];
 
-        \Utils\LogManager::getInstance()->info("time summary:".print_r($result, true));
         return $result;
     }
 
