@@ -642,7 +642,7 @@ create table `Attendance` (
 	`in_time` datetime default NULL,
 	`out_time` datetime default NULL,
 	`note` varchar(500) default null,
-	`automatic_event` tinyint(1) NOT NULL DEFAULT '0'
+	`automatic_event` tinyint(1) NOT NULL DEFAULT '0',
 	CONSTRAINT `Fk_Attendance_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	KEY `in_time` (`in_time`),
 	KEY `out_time` (`out_time`),
@@ -878,36 +878,10 @@ create table `Ethnicity` (
 	primary key  (`id`)
 ) engine=innodb default charset=utf8;
 
-create table `EmployeeElectricity` (
-	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`employee` bigint(20) NOT NULL,
-	`date` date NOT NULL,
-	`measurement` decimal(10,2) NOT NULL,
-    `payroll` bigint(20) DEFAULT NULL,
-	`details` text DEFAULT NULL,
-	CONSTRAINT `Fk_EmployeeElectricity_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT `Fk_EmployeeElectricity_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-	primary key  (`id`)
-) engine=innodb default charset=utf8;
-
 CREATE TABLE `IncentiveTypes` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
 	`name` varchar(35) CHARACTER SET utf8 NOT NULL,
 	`description` text CHARACTER SET utf8 NOT NULL,
-	primary key  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `EmployeeIncentives` (
-	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`employee` bigint(20) NOT NULL,
-	`amount` decimal(10,2) NOT NULL,
-	`date` date NOT NULL,
-	`incentive_type` bigint(20) NOT NULL,
-	`pre_paid` tinyint(1) NOT NULL,
-	`payroll` bigint(20) DEFAULT NULL,
-	`details` text DEFAULT NULL,
-	CONSTRAINT `Fk_EmployeeIncentives_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT `Fk_EmployeeIncentives_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	primary key  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -915,20 +889,6 @@ CREATE TABLE `DeductionTypes` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
 	`name` varchar(35) CHARACTER SET utf8 NOT NULL,
 	`description` text CHARACTER SET utf8 NOT NULL,
-	primary key  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `EmployeeDeductions`
-	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`employee` bigint(20) NOT NULL,
-	`amount` decimal(10,2) NOT NULL,
-	`date` date NOT NULL,
-	`deduction_type` bigint(20) NOT NULL,
-	`pre_paid` tinyint(1) NOT NULL,
-	`payroll` bigint(20) DEFAULT NULL,
-	`details` text DEFAULT NULL,
-	CONSTRAINT `Fk_EmployeeDeductions_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT `Fk_EmployeeDeductions_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 	primary key  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -982,9 +942,6 @@ create table `Deductions` (
 	CONSTRAINT `Fk_Deductions_DeductionGroup` FOREIGN KEY (`deduction_group`) REFERENCES `DeductionGroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 	primary key  (`id`)
 ) engine=innodb default charset=utf8;
-
-
-
 
 create table `PayrollEmployees` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1051,8 +1008,45 @@ CREATE TABLE `PayrollColumns` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB default charset=utf8;
 
+create table `EmployeeElectricity` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+	`employee` bigint(20) NOT NULL,
+	`date` date NOT NULL,
+	`measurement` decimal(10,2) NOT NULL,
+    `payroll` bigint(20) DEFAULT NULL,
+	`details` text DEFAULT NULL,
+	CONSTRAINT `Fk_EmployeeElectricity_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT `Fk_EmployeeElectricity_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	primary key  (`id`)
+) engine=innodb default charset=utf8;
 
+CREATE TABLE `EmployeeIncentives` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+	`employee` bigint(20) NOT NULL,
+	`amount` decimal(10,2) NOT NULL,
+	`date` date NOT NULL,
+	`incentive_type` bigint(20) NOT NULL,
+	`pre_paid` tinyint(1) NOT NULL,
+	`payroll` bigint(20) DEFAULT NULL,
+	`details` text DEFAULT NULL,
+	CONSTRAINT `Fk_EmployeeIncentives_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT `Fk_EmployeeIncentives_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	primary key  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `EmployeeDeductions` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+	`employee` bigint(20) NOT NULL,
+	`amount` decimal(10,2) NOT NULL,
+	`date` date NOT NULL,
+	`deduction_type` bigint(20) NOT NULL,
+	`pre_paid` tinyint(1) NOT NULL,
+	`payroll` bigint(20) DEFAULT NULL,
+	`details` text DEFAULT NULL,
+	CONSTRAINT `Fk_EmployeeDeductions_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT `Fk_EmployeeDeductions_Payroll` FOREIGN KEY (`payroll`) REFERENCES `Payroll` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+	primary key  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table `EmployementType` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
