@@ -1005,6 +1005,8 @@ CREATE TABLE `PayrollColumns` (
 	`default_value` varchar(25) DEFAULT NULL,
 	`calculation_columns` varchar(500) DEFAULT NULL,
 	`calculation_function` varchar(100) DEFAULT NULL,
+	`deduction_group` bigint(20) NULL,
+	CONSTRAINT `Fk_PayrollColumns_DeductionGroup` FOREIGN KEY (`deduction_group`) REFERENCES `DeductionGroup` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB default charset=utf8;
 
