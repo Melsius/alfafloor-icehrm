@@ -12,6 +12,14 @@ use Classes\SettingsManager;
 
 class BasicOvertimeCalculator
 {
+    private $startDateStr;
+    private $endDateStr;
+
+    function __construct($startDateStr, $endDateStr)
+    {
+        $this->startDateStr = $startDateStr;
+        $this->endDateStr = $endDateStr;
+    }
 
     public function createAttendanceSummary($atts)
     {

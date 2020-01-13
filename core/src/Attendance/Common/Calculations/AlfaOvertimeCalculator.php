@@ -4,8 +4,39 @@ namespace Attendance\Common\Calculations;
 use Classes\SettingsManager;
 use Attendance\Common\Calculations\BasicOvertimeCalculator;
 
+
 class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
+    const ROUNDTOSECONDS = 15*60;
+    const HOURSBYDAY = [
+        8, 8, 8, 8, 8, 7, 7
+    ];
+
+    private $totalTimeInPeriod = 0;
+
+    function __construct($startDateStr, $endDateStr)
+    {
+        parent::__construct($startDateStr, $endDateStr);
+        $date = strtotime($startDateStr);
+        $endDate = strtotime($endDateStr);
+
+        while ($date < $endDate) {
+            $expectedHours = 8;
+            if (date('w', $date) == 5) {
+                $expectedHours = 7;
+            }
+            $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
+            $date = strtotime("+1 day", $date); 
+        }
+    }
+
+    private function roundTimeStr($timeStr)
+    {
+        $time = strtotime($timeStr);
+        $time -= $time % self::ROUNDTOSECONDS;
+        return $time;
+    }
+
     public function createAttendanceSummary($atts)
     {
 
@@ -22,7 +53,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 $atTimeByDay[$atDate]   = 0;
             }
 
-            $diff = strtotime($atEntry->out_time) - strtotime($atEntry->in_time);
+            $diff = $this->roundTimeStr($atEntry->out_time) - $this->roundTimeStr($atEntry->in_time);
             if ($diff < 0) {
                 $diff = 0;
             }
@@ -33,41 +64,24 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $atTimeByDay;
     }
 
-    public function calculateOvertime($atTimeByDay)
+    protected function createTimeSummary($atTimeByDay)
     {
-        $overtimeStarts = SettingsManager::getInstance()->getSetting('Attendance: Overtime Start Hour');
-        $doubletimeStarts = SettingsManager::getInstance()->getSetting('Attendance: Double time Start Hour');
+        $result = array(
+            't' => 0, // total time
+            'r' => 0, // regular time
+            'o' => 0, // overtime
+            'd' => 0); // double time -- always 0
 
-        $overtimeStarts = (is_numeric($overtimeStarts))?floatval($overtimeStarts)*60*60:0;
-        $doubletimeStarts = (is_numeric($doubletimeStarts))?floatval($doubletimeStarts)*60*60:0;
-
-        $atTimeByDayNew = array();
-        foreach ($atTimeByDay as $k => $v) {
-            $atTimeByDayNewEntry = array("t"=>$v,"r"=>0,"o"=>0,"d"=>0);
-            if ($overtimeStarts > 0 && $v > $overtimeStarts) {
-                $atTimeByDayNewEntry["r"] = $overtimeStarts;
-                if ($doubletimeStarts > 0 && $doubletimeStarts > $overtimeStarts) {
-                    //calculate double time
-                    if ($v > $doubletimeStarts) {
-                        $atTimeByDayNewEntry['d'] =  $v - $doubletimeStarts;
-                        $atTimeByDayNewEntry['o'] = $doubletimeStarts - $overtimeStarts;
-                    } else {
-                        $atTimeByDayNewEntry['d'] = 0 ;
-                        $atTimeByDayNewEntry['o'] = $v - $overtimeStarts;
-                    }
-                } else {
-                    //ignore double time
-                    $atTimeByDayNewEntry['o'] = $v - $overtimeStarts;
-                }
-            } else {
-                //ignore overtime
-                $atTimeByDayNewEntry['r'] = $v;
-            }
-
-            $atTimeByDayNew[$k] = $atTimeByDayNewEntry;
+        foreach ($atTimeByDay as $date => $time) {
+            $result['t'] += $time;
         }
+        if ($this->totalTimeInPeriod <= $result['t']) {
+            $result['o'] = $result['t'] - $this->totalTimeInPeriod;
+        }
+        $result['r'] = $result['t'] - $result['o'];
 
-        return $atTimeByDayNew;
+        \Utils\LogManager::getInstance()->info("time summary:".print_r($result, true));
+        return $result;
     }
 
     protected function removeAdditionalDays($atSummary, $actualStartDate)
@@ -84,24 +98,23 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
     public function getData($atts, $actualStartDate, $aggregate = false)
     {
-        $atSummary = $this->createAttendanceSummary($atts);
-        $overtime = $this->calculateOvertime($this->removeAdditionalDays($atSummary, $actualStartDate));
+        $timeSummary = $this->getDataSeconds($atts, $actualStartDate, false);
         if ($aggregate) {
-            $overtime = $this->aggregateData($overtime);
-            return $this->convertToHoursAggregated($overtime);
+            return $this->convertToHoursAggregated($timeSummary);
         } else {
-            return $this->convertToHours($overtime);
+            // TODO: throw exception?
+            return $this->convertToHours($timeSummary);
         }
     }
 
     public function getDataSeconds($atts, $actualStartDate, $aggregate = false)
     {
         $atSummary = $this->createAttendanceSummary($atts);
-        $overtime = $this->calculateOvertime($this->removeAdditionalDays($atSummary, $actualStartDate));
+        $timeSummary = $this->createTimeSummary($this->removeAdditionalDays($atSummary, $actualStartDate));
         if ($aggregate) {
-            $overtime = $this->aggregateData($overtime);
-            return $overtime;
+            return $timeSummary;
         } else {
+            // TODO: throw exception?
             return $overtime;
         }
     }
