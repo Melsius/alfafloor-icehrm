@@ -134,7 +134,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 // Overtime is not applicable
                 $result['r'] = $this->totalTimeInPeriod;
             }
-        }
+	} else {
+		$result['r'] = $result['t'];
+	}
 
         return $result;
     }
