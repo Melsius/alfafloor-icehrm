@@ -10,7 +10,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 {
     const ROUNDTOSECONDS = 15*60;
     const HOURSBYDAY = [
-        8, 8, 8, 8, 8, 7, 7
+        8, 8, 8, 8, 8, 7, 0
     ];
     const BREAKSECONDS = 60*60;
 
@@ -23,15 +23,10 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         $date = strtotime($startDateStr);
         $endDate = strtotime($endDateStr);
 
-        while ($date < $endDate) {
-            $expectedHours = 8;
-            if (date('w', $date) == 5) {
-                $expectedHours = 7;
-            }
+        while ($date <= $endDate) {
             $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
             $date = strtotime("+1 day", $date); 
         }
-
         $payrollEmployee = new PayrollEmployee();
         $payrollEmployee->Load('employee = ?', array($employeeId));
 
