@@ -55,13 +55,19 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $time;
     }
 
-    private function roundOffsiteInTimeStr($timeStr)
+    private function roundFirstInTimeStr($timeStr)
     {
         $time = strtotime($timeStr);
-        // Add 15 minute grace period if more than 15 minutes late
         $ssinceToday = date('h', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
-        if ($ssinceToday >= 8*60*60 + 15*60) {
-            $time -= 15*60;
+
+        if ($ssinceToday < 8*60*60) {
+            $time += (8*60*60 - $ssinceToday);
+        }
+        if ($this->salesEmployee) {
+            // Add 15 minute grace period if more than 15 minutes late
+            if ($ssinceToday >= 8*60*60 + 15*60) {
+                $time -= 15*60;
+            }
         }
         $time -= $time % self::ROUNDTOSECONDS;
         return $time;
@@ -86,7 +92,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 if ($curDate != $atDate) {
                     if ($curDate != '') {
                         // Calculate time for curDate
-                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundOffsiteInTimeStr($firstAtEntry->in_time);
+                        $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
+                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
                         $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
                     }
                     // Update loop variables
@@ -98,7 +105,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             }
             if ($curDate != '') {
                 // Calculate time for the remaining date
-                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundOffsiteInTimeStr($firstAtEntry->in_time);
+                $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
+                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
                 $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
             }
 
@@ -110,11 +118,15 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
                 $atDate = date("Y-m-d", strtotime($atEntry->in_time));
 
+                $inTime = 0;
                 if (!isset($atTimeByDay[$atDate])) {
                     $atTimeByDay[$atDate] = 0;
+                    $inTime = $this->roundFirstInTimeStr($atEntry->in_time);
+                } else {
+                    $inTime = $this->roundTimeStr($atEntry->in_time);
                 }
 
-                $diff = $this->roundTimeStr($atEntry->out_time) - $this->roundTimeStr($atEntry->in_time);
+                $diff = $this->roundTimeStr($atEntry->out_time) - $inTime;
                 if ($diff < 0) {
                     $diff = 0;
                 }

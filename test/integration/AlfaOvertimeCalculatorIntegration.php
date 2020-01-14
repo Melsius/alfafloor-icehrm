@@ -195,14 +195,14 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         // Punch 1 hour overtime
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
-            'in_time' => '2020-01-15 07:00:00',
+            'in_time' => '2020-01-15 08:00:00',
             'out_time' => '2020-01-15 12:00:00'
         ]));
         $this->actionMgr->savePunch($punch);
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => '2020-01-15 13:00:00',
-            'out_time' => '2020-01-15 17:00:00'
+            'out_time' => '2020-01-15 18:00:00'
         ]));
         $this->actionMgr->savePunch($punch);
 
@@ -224,6 +224,29 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkRegularOvertime(self::SALES_INDEX, true);
     }
 
+    public function testIgnoreEarlyClockIn()
+    {
+        $empIndex = 0;
+        $attUtil = new AttendanceUtil();
+
+        // Punch in early
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 07:00:00',
+            'out_time' => '2020-01-15 12:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 13:00:00',
+            'out_time' => '2020-01-15 17:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-15', '2020-01-15');
+        $this->assertEquals($sum['t'], 8*60*60);
+    }
+
     private function checkFreelanceOvertime($empIndex)
     {
         $attUtil = new AttendanceUtil();
@@ -243,14 +266,14 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         // Punch 1 hour overtime
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
-            'in_time' => '2020-01-15 07:00:00',
+            'in_time' => '2020-01-15 08:00:00',
             'out_time' => '2020-01-15 12:00:00'
         ]));
         $this->actionMgr->savePunch($punch);
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => '2020-01-15 13:00:00',
-            'out_time' => '2020-01-15 17:00:00'
+            'out_time' => '2020-01-15 18:00:00'
         ]));
         $this->actionMgr->savePunch($punch);
 
