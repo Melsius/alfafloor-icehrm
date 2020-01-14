@@ -17,7 +17,6 @@ class AttendanceActionManager extends SubActionManager
 
     public function savePunch($req)
     {
-
         $employee = $this->baseService->getElement('Employee', $req->employee, null, true);
         $inDateTime = $req->in_time;
         $inDateArr = explode(" ", $inDateTime);

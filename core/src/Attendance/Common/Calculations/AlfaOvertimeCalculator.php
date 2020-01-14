@@ -44,6 +44,18 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $time;
     }
 
+    private function roundOffsiteInTimeStr($timeStr)
+    {
+        $time = strtotime($timeStr);
+        // Add 15 minute grace period if more than 15 minutes late
+        $ssinceToday = date('h', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
+        if ($ssinceToday >= 8*60*60 + 15*60) {
+            $time -= 15*60;
+        }
+        $time -= $time % self::ROUNDTOSECONDS;
+        return $time;
+    }
+
     public function createAttendanceSummary($atts)
     {
 
@@ -63,7 +75,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 if ($curDate != $atDate) {
                     if ($curDate != '') {
                         // Calculate time for curDate
-                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundTimeStr($firstAtEntry->in_time);
+                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundOffsiteInTimeStr($firstAtEntry->in_time);
                         $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
                     }
                     // Update loop variables
@@ -75,7 +87,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             }
             if ($curDate != '') {
                 // Calculate time for the remaining date
-                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundTimeStr($firstAtEntry->in_time);
+                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $this->roundOffsiteInTimeStr($firstAtEntry->in_time);
                 $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
             }
 
