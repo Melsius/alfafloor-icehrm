@@ -1521,6 +1521,5 @@ CREATE TABLE `PublicHolidays` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
   `note` varchar(500) DEFAULT NULL,
-  primary key (`id`),
-
+  primary key (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

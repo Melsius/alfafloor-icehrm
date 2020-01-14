@@ -202,10 +202,10 @@ class EmployeeDeductionsAdapter extends AdapterBase {
 }
 
 /*
- * PublicHolidaysAdapter
+ * PublicHolidayAdapter
  */
 
-class PublicHolidaysAdapter extends AdapterBase {
+class PublicHolidayAdapter extends AdapterBase {
   getDataMapping() {
     return [
       'id',
@@ -237,5 +237,5 @@ module.exports = {
   EmployeeIncentivesAdapter,
   DeductionTypesAdapter,
   EmployeeDeductionsAdapter,
-  PublicHolidaysAdapter
+  PublicHolidayAdapter
 };

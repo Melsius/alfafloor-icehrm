@@ -4,7 +4,7 @@ import {
   EmployeeIncentivesAdapter,
   DeductionTypesAdapter,
   EmployeeDeductionsAdapter,
-  PublicHolidaysAdapter
+  PublicHolidayAdapter
 } from './lib';
 
 window.EmployeeElectricityAdapter = EmployeeElectricityAdapter;
@@ -12,4 +12,4 @@ window.IncentiveTypesAdapter = IncentiveTypesAdapter;
 window.EmployeeIncentivesAdapter = EmployeeIncentivesAdapter;
 window.DeductionTypesAdapter = DeductionTypesAdapter;
 window.EmployeeDeductionsAdapter = EmployeeDeductionsAdapter;
-window.PublicHolidaysAdapter = PublicHolidaysAdapter;
+window.PublicHolidayAdapter = PublicHolidayAdapter;

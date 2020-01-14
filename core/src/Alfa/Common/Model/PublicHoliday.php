@@ -3,7 +3,7 @@ namespace Alfa\Common\Model;
 
 use Model\BaseModel;
 
-class PublicHolidays extends BaseModel
+class PublicHoliday extends BaseModel
 {
     public $table = 'PublicHolidays';
 

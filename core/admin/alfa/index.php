@@ -56,9 +56,9 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 		</div>
 
 		<div class="tab-pane" id="tabPagePublicHolidays">
-			<div id="PublicHolidays" class="reviewBlock" data-content="List" style="padding-left:5px;">
+			<div id="PublicHoliday" class="reviewBlock" data-content="List" style="padding-left:5px;">
 			</div>
-			<div id="PublicHolidaysForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+			<div id="PublicHolidayForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 			</div>
 		</div>
 	</div>
@@ -106,7 +106,7 @@ modJsList['tabEmployeeDeductions'].setShowDelete(true);
 modJsList['tabEmployeeDeductions'].setShowEdit(true);
 
 // public holidays
-modJsList['tabPublicHolidays'] = new PublicHolidaysAdapter('PublicHolidays');
+modJsList['tabPublicHolidays'] = new PublicHolidayAdapter('PublicHoliday');
 modJsList['tabPublicHolidays'].setShowAddNew(true);
 modJsList['tabPublicHolidays'].setShowDelete(true);
 modJsList['tabPublicHolidays'].setShowEdit(true);
