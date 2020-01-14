@@ -14,6 +14,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 		<li><a id="tabEmployeeIncentives" href="#tabPageEmployeeIncentives"><?=t('Employee Incentives')?></a></li>
 		<li><a id="tabDeductionTypes" href="#tabPageDeductionTypes"><?=t('Deduction Types')?></a></li>
 		<li><a id="tabEmployeeDeductions" href="#tabPageEmployeeDeductions"><?=t('Employee Deductions')?></a></li>
+		<li><a id="tabPublicHolidays" href="#tabPagePublicHolidays"><?=t('Public Holidays')?></a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -51,6 +52,13 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 			<div id="EmployeeDeductions" class="reviewBlock" data-content="List" style="padding-left:5px;">
 			</div>
 			<div id="EmployeeDeductionsForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+			</div>
+		</div>
+
+		<div class="tab-pane" id="tabPagePublicHolidays">
+			<div id="PublicHolidays" class="reviewBlock" data-content="List" style="padding-left:5px;">
+			</div>
+			<div id="PublicHolidaysForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 			</div>
 		</div>
 	</div>
@@ -96,6 +104,12 @@ modJsList['tabEmployeeDeductions'] = new EmployeeDeductionsAdapter('EmployeeDedu
 modJsList['tabEmployeeDeductions'].setShowAddNew(true);
 modJsList['tabEmployeeDeductions'].setShowDelete(true);
 modJsList['tabEmployeeDeductions'].setShowEdit(true);
+
+// public holidays
+modJsList['tabPublicHolidays'] = new PublicHolidaysAdapter('PublicHolidays');
+modJsList['tabPublicHolidays'].setShowAddNew(true);
+modJsList['tabPublicHolidays'].setShowDelete(true);
+modJsList['tabPublicHolidays'].setShowEdit(true);
 
 var modJs = modJsList['tabEmployeeElectricity'];
 

@@ -25,6 +25,7 @@ class AlfaAdminManager extends AbstractModuleManager
         $this->addModelClass('EmployeeIncentives');
         $this->addModelClass('DeductionTypes');
         $this->addModelClass('EmployeeDeductions');
+        $this->addModelClass('PublicHolidays');
     }
  
     public function initCalculationHooks()

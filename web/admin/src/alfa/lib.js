@@ -200,10 +200,42 @@ class EmployeeDeductionsAdapter extends AdapterBase {
     ];
   }
 }
+
+/*
+ * PublicHolidaysAdapter
+ */
+
+class PublicHolidaysAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'date',
+      'note'
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Date' },
+      { sTitle: 'Note' },
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['date', { label: 'Date', type: 'date', validation: ''}],
+      ['note', { label: 'Note', type: 'textarea', validation: 'none' }],
+    ];
+  }
+}
+
 module.exports = {
   EmployeeElectricityAdapter,
   IncentiveTypesAdapter,
   EmployeeIncentivesAdapter,
   DeductionTypesAdapter,
-  EmployeeDeductionsAdapter
+  EmployeeDeductionsAdapter,
+  PublicHolidaysAdapter
 };
