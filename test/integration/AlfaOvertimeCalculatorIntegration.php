@@ -7,6 +7,7 @@ use Classes\BaseService;
 use Salary\Common\Model\PayrollEmployee;
 use Employees\Common\Model\Employee;
 use Attendance\Common\Model\Attendance;
+use Alfa\Common\Model\PublicHoliday;
 use Attendance\Admin\Api\AttendanceActionManager;
 use Attendance\Admin\Api\AttendanceUtil;
 use Payroll\Common\Model\DeductionGroup;
@@ -361,5 +362,28 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->assertEquals($sum['t'], 8*60*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-03', '2020-01-03');
         $this->assertEquals($sum['t'], 8*60*60 - 15*60);
+    }
+
+    public function testPublicHolidays()
+    {
+        $attUtil = new AttendanceUtil();
+        $empIndex = 0;
+        $this->punchRegularDay($empIndex, '2020-01-01');
+        $this->punchRegularDay($empIndex, '2020-01-02');
+
+        // Before adding a public holiday
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-02');
+        $this->assertEquals($sum['t'], 2*8*60*60);
+
+        // Add a public holiday and verify one day is gone
+        $publicHoliday = new PublicHoliday();
+        $publicHoliday->date = '2020-01-01';
+        $publicHoliday->note = 'New year';
+        $publicHoliday->Save();
+
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-02');
+        $this->assertEquals($sum['t'], 2*8*60*60);
+        $this->assertEquals($sum['r'], 1*8*60*60); // The previously booked day is now overtime
+        $this->assertEquals($sum['o'], 1*8*60*60);
     }
 }

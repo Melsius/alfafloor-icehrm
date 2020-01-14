@@ -5,6 +5,7 @@ use Classes\SettingsManager;
 use Attendance\Common\Calculations\BasicOvertimeCalculator;
 use Salary\Common\Model\PayrollEmployee;
 use Payroll\Common\Model\DeductionGroup;
+use Alfa\Common\Model\PublicHoliday;
 
 class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
@@ -39,10 +40,16 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         if (strpos(strtolower($salaryGroup->name), "freelance") !== false) {
             $this->freelanceEmployee = true;
         }
-        
+
         if (!$this->freelanceEmployee) {
             while ($date <= $endDate) {
-                $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
+                $dateStr = date('Y-m-d', $date);
+                $publicHoliday = new PublicHoliday();
+                $publicHoliday->Load('date = ?', $dateStr);
+                if ($publicHoliday->date != $dateStr) {
+                    // Date not in public holidays
+                    $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
+                }
                 $date = strtotime("+1 day", $date); 
             }
         }
