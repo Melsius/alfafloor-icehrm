@@ -176,7 +176,7 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkNoOvertime(self::FREELANCE_ON_SITE_INDEX, false);
     }
 
-    private function checkOffOnSiteOvertime($empIndex, $isOffsite)
+    private function checkRegularOvertime($empIndex, $isSales)
     {
         $attUtil = new AttendanceUtil();
 
@@ -209,7 +209,7 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
         $this->assertEquals($sum['t'], (11*8 + 2*7 + 1)*60*60);
         $this->assertEquals($sum['r'], $sum['t'] - 1*60*60);
-        if ($isOffsite) {
+        if ($isSales) {
             $this->assertEquals($sum['o'], 0);
         } else {
             $this->assertEquals($sum['o'], 1*60*60);
@@ -217,13 +217,54 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->assertEquals($sum['d'], 0);
     }
 
-    public function testOffOnSiteOvertime()
+    public function testRegularOvertime()
     {
-        $this->checkNoOvertime(self::REGULAR_ON_SITE_INDEX, false);
-        $this->checkNoOvertime(self::FREELANCE_OFF_SITE_INDEX, true);
-        $this->checkNoOvertime(self::SALES_INDEX, true);
-        $this->checkNoOvertime(self::REGULAR_OFF_SITE_INDEX, true);
-        $this->checkNoOvertime(self::FREELANCE_ON_SITE_INDEX, false);
+        $this->checkRegularOvertime(self::REGULAR_ON_SITE_INDEX, false);
+        $this->checkRegularOvertime(self::REGULAR_OFF_SITE_INDEX, false);
+        $this->checkRegularOvertime(self::SALES_INDEX, true);
+    }
+
+    private function checkFreelanceOvertime($empIndex)
+    {
+        $attUtil = new AttendanceUtil();
+
+        $this->punchRegularDay($empIndex, '2020-01-01'); // Wednesday
+        // Skip Thursday
+        $this->punchRegularDay($empIndex, '2020-01-03');
+        $this->punchRegularSaturday($empIndex, '2020-01-04');
+        $this->punchRegularDay($empIndex, '2020-01-06');
+        $this->punchRegularDay($empIndex, '2020-01-07');
+        $this->punchRegularDay($empIndex, '2020-01-08');
+        $this->punchRegularDay($empIndex, '2020-01-09');
+        $this->punchRegularDay($empIndex, '2020-01-10');
+        // Skip Saturday
+        $this->punchRegularDay($empIndex, '2020-01-13');
+        $this->punchRegularDay($empIndex, '2020-01-14');
+        // Punch 1 hour overtime
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 07:00:00',
+            'out_time' => '2020-01-15 12:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 13:00:00',
+            'out_time' => '2020-01-15 17:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
+        $this->assertEquals($sum['t'], (10*8 + 1*7 + 1)*60*60);
+        $this->assertEquals($sum['r'], $sum['t'] - 1*60*60);
+        $this->assertEquals($sum['o'], 1*60*60);
+        $this->assertEquals($sum['d'], 0);
+    }
+    
+    public function testFreelanceOvertime()
+    {
+        $this->checkFreelanceOvertime(self::FREELANCE_ON_SITE_INDEX, true);
+        $this->checkFreelanceOvertime(self::FREELANCE_OFF_SITE_INDEX, true);
     }
 
     public function testRounding()
@@ -266,7 +307,7 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->assertEquals($sum['t'], 1*60*60);
     }
 
-    public function testOffsiteGracePeriod()
+    public function testSalesGracePeriod()
     {
         $attUtil = new AttendanceUtil();
         $empIndex = self::SALES_INDEX;

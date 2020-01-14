@@ -16,6 +16,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
     private $totalTimeInPeriod = 0;
     private $offsiteEmployee = false;
+    private $salesEmployee = false;
+    private $freelanceEmployee = false;
 
     function __construct($employeeId, $startDateStr, $endDateStr)
     {
@@ -23,17 +25,26 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         $date = strtotime($startDateStr);
         $endDate = strtotime($endDateStr);
 
-        while ($date <= $endDate) {
-            $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
-            $date = strtotime("+1 day", $date); 
-        }
         $payrollEmployee = new PayrollEmployee();
         $payrollEmployee->Load('employee = ?', array($employeeId));
 
         $salaryGroup = new DeductionGroup();
         $salaryGroup->Load('id = ?', $payrollEmployee->deduction_group);
-        if ($salaryGroup->name == 'Sales' || strpos(strtolower($salaryGroup->name), "off-site") !== false) {
+        if ($salaryGroup->name == 'Sales') {
             $this->offsiteEmployee = true;
+            $this->salesEmployee = true;
+        } elseif (strpos(strtolower($salaryGroup->name), "off-site") !== false) {
+            $this->offsiteEmployee = true;
+        }
+        if (strpos(strtolower($salaryGroup->name), "freelance") !== false) {
+            $this->freelanceEmployee = true;
+        }
+        
+        if (!$this->freelanceEmployee) {
+            while ($date <= $endDate) {
+                $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
+                $date = strtotime("+1 day", $date); 
+            }
         }
     }
 
@@ -125,18 +136,23 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
         foreach ($atTimeByDay as $date => $time) {
             $result['t'] += $time;
+            if ($this->freelanceEmployee) {
+                $dateTime = new \DateTime($date);
+                $this->totalTimeInPeriod += self::HOURSBYDAY[$dateTime->format('w')-1] * 3600;
+            }
         }
+
         if ($this->totalTimeInPeriod <= $result['t']) {
-            if (!$this->offsiteEmployee) {
+            if (!$this->salesEmployee) {
                 $result['o'] = $result['t'] - $this->totalTimeInPeriod;
                 $result['r'] = $result['t'] - $result['o'];
             } else {
                 // Overtime is not applicable
                 $result['r'] = $this->totalTimeInPeriod;
             }
-	} else {
-		$result['r'] = $result['t'];
-	}
+        } else {
+            $result['r'] = $result['t'];
+        }
 
         return $result;
     }
