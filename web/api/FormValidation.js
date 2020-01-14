@@ -57,6 +57,17 @@ const ValidationRules = {
     return false;
   },
 
+  date(str) {
+    const datePattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+    return str != null && datePattern.test(str);
+  }
+
+  dateOrEmpty(str) {
+    if (str === '') {
+      return true;
+    }
+    return date(str);
+  }
 
 };
 
