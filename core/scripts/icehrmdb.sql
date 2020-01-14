@@ -1516,3 +1516,11 @@ create table `Migrations` (
 	index `KEY_Migrations_status` (`status`),
 	index `KEY_Migrations_version` (`version`)
 ) engine=innodb default charset=utf8;
+
+CREATE TABLE `PublicHolidays` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `note` varchar(500) DEFAULT NULL,
+  primary key (`id`),
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
