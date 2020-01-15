@@ -9,9 +9,9 @@
     ],
     "permissions": {
         "Manager": {
-            "Add Electricity Measurement": "No",
-            "Edit Electricity Measurement": "No",
-            "Delete Electricity Measurement": "No"
+            "Add Electricity Measurement": "Yes",
+            "Edit Electricity Measurement": "Yes",
+            "Delete Electricity Measurement": "Yes"
         }
     },
     "model_namespace": "\\Alfa\\Common\\Model",
