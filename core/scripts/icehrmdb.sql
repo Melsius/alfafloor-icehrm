@@ -1042,7 +1042,6 @@ CREATE TABLE `EmployeeDeductions` (
 	`amount` decimal(10,2) NOT NULL,
 	`date` date NOT NULL,
 	`deduction_type` bigint(20) NOT NULL,
-	`pre_paid` tinyint(1) NOT NULL,
 	`payroll` bigint(20) DEFAULT NULL,
 	`details` text DEFAULT NULL,
 	CONSTRAINT `Fk_EmployeeDeductions_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
