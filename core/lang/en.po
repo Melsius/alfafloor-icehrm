@@ -99,7 +99,7 @@ msgid "Audit Log"
 msgstr "Audit Log"
 
 msgid "Employees"
-msgstr "Employees"
+msgstr "Employees/พนักงาน"
 
 msgid "Employee History"
 msgstr "Employee History"
@@ -114,7 +114,7 @@ msgid "Expense Administration"
 msgstr "Expense Administration"
 
 msgid "Monitor Attendance"
-msgstr "Monitor Attendance"
+msgstr "Monitor Attendance/ตรวจการเข้างาน"
 
 msgid "Performance Charts"
 msgstr "Performance Charts"
@@ -156,13 +156,13 @@ msgid "Field Names Setup"
 msgstr "Field Names Setup"
 
 msgid "Payroll"
-msgstr "Payroll"
+msgstr "Payroll/เงินเดือน"
 
 msgid "Salary"
-msgstr "Salary"
+msgstr "Salary/อัคราเงินเดือน"
 
 msgid "Payroll Reports"
-msgstr "Payroll Reports"
+msgstr "Payroll Reports/รายงานเงินเดือน"
 
 msgid "Recruitment"
 msgstr "Recruitment"
@@ -1296,7 +1296,7 @@ msgid "Add Time Entry"
 msgstr "Add Time Entry"
 
 msgid "Current Clocked In Status"
-msgstr "Current Clocked In Status"
+msgstr "Current Clocked In Status/สถานะการเข้างานปัจจุบัน"
 
 msgid "Attendance entry should be within a single day"
 msgstr "Attendance entry should be within a single day"
@@ -1377,10 +1377,10 @@ msgid "Employee Salary Components"
 msgstr "Employee Salary Components"
 
 msgid "Company Payroll"
-msgstr "Company Payroll"
+msgstr "Company Payroll/เงินเดือนบริษัท"
 
 msgid "Calculation Groups"
-msgstr "Calculation Groups"
+msgstr "Calculation Groups/กลุ่มการคิดเงินเดือน"
 
 msgid "Calculation Methods"
 msgstr "Calculation Methods"
@@ -1960,3 +1960,6 @@ msgstr "Provide Feedback"
 
 msgid "Review Status"
 msgstr "Review Status"
+
+msgid "Alfa Dashboard"
+msgstr "Alfa Dashboard/อัลฟ่า"
