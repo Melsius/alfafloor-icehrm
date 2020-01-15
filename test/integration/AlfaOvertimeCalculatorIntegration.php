@@ -374,6 +374,8 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         // Before adding a public holiday
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-02');
         $this->assertEquals($sum['t'], 2*8*60*60);
+        $this->assertEquals($sum['r'], $sum['t']);
+        $this->assertEquals($sum['o'], 0);
 
         // Add a public holiday and verify one day is gone
         $publicHoliday = new PublicHoliday();
