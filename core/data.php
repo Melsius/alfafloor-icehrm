@@ -36,7 +36,8 @@ if (!isset($_REQUEST['objects'])) {
 
 $isSubOrdinates = false;
 if (isset($_REQUEST['type']) && $_REQUEST['type'] == "sub") {
-    $isSubOrdinates = true;
+    // $isSubOrdinates = true; /* mels: _REQUEST['type'] = "sub" is always set for some mysterious reason */
+    $isSubOrdinates = false;
 }
 
 $skipProfileRestriction = false;
@@ -53,7 +54,7 @@ $data = \Classes\BaseService::getInstance()->getData(
     $sLimit,
     $_REQUEST['cl'],
     $_REQUEST['sSearch'],
-    false, // $isSubOrdinates, /* mels: _REQUEST['type'] = "sub" is always set for some mysterious reason */
+    $isSubOrdinates,
     $skipProfileRestriction,
     $sortData
 );
