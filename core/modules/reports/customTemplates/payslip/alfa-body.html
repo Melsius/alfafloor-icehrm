@@ -10,18 +10,10 @@
         {% endfor %}
         <div class="row">
             <div class="col-xs-6">
-                <b>Employee</b>
+                <b style="font-size: 20px">Employee</b>
             </div>
-            <div class="col-xs-6" style="text-align: right">
+            <div class="col-xs-6" style="text-align: right; font-size: 20px">
                 {{employeeName}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-6">
-                <b>Period</b>
-            </div>
-            <div class="col-xs-6" style="text-align: right">
-                {{payroll.date_start}} - {{payroll.date_end}}
             </div>
         </div>
     {% for field in fields %}
