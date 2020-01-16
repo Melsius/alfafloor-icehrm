@@ -136,5 +136,11 @@ class AttendanceAdminManager extends AbstractModuleManager
             '\\Attendance\\Admin\\Api\\AttendanceUtil',
             'getWorkedDays'
         );
+        $this->addCalculationHook(
+            'AttendanceUtil_getUnderTimeHours',
+            'Hours of undertime from Attendance',
+            '\\Attendance\\Admin\\Api\\AttendanceUtil',
+            'getUnderTimeHours'
+        );
     }
 }
