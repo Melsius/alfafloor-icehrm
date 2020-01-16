@@ -46,6 +46,18 @@ class AttendanceUtil
     public function getOverTimeWorkedHours($employeeId, $startDate, $endDate)
     {
         $atSum = $this->getAttendanceSummary($employeeId, $startDate, $endDate);
+        if ($atSum['o'] < 0) {
+            return 0.00;
+        }
+        return round(($atSum['o']/60)/60, 2);
+    }
+
+    public function getUnderTimeHours($employeeId, $startDate, $endDate)
+    {
+        $atSum = $this->getAttendanceSummary($employeeId, $startDate, $endDate);
+        if ($atSum['o'] > 0) {
+            return 0.00;
+        }
         return round(($atSum['o']/60)/60, 2);
     }
 

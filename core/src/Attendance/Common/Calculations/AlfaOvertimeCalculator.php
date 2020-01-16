@@ -148,9 +148,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
     protected function createTimeSummary($atTimeByDay)
     {
         $result = array(
-            't' => 0, // total time
-            'r' => 0, // regular time
-            'o' => 0, // overtime
+            't' => 0,  // total worked time
+            'r' => 0,  // regular worked time
+            'o' => 0,  // overtime / undertime
             'd' => 0); // double time -- always 0
 
         foreach ($atTimeByDay as $date => $time) {
@@ -161,13 +161,12 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             }
         }
 
-        if ($this->totalTimeInPeriod <= $result['t']) {
-            if (!$this->salesEmployee) {
-                $result['o'] = $result['t'] - $this->totalTimeInPeriod;
-                $result['r'] = $result['t'] - $result['o'];
-            } else {
+        $result['o'] = $result['t'] - $this->totalTimeInPeriod;
+        if ($result['o'] > 0) {
+            $result['r'] = $result['t'] - $result['o'];
+            if ($this->salesEmployee) {
                 // Overtime is not applicable
-                $result['r'] = $this->totalTimeInPeriod;
+                $result['o'] = 0;
             }
         } else {
             $result['r'] = $result['t'];

@@ -143,7 +143,7 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->actionMgr->savePunch($punch);
     }
 
-    private function checkNoOvertime($empIndex, $isOffsite)
+    private function checkNoOvertime($empIndex)
     {
         $attUtil = new AttendanceUtil();
 
@@ -170,11 +170,11 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
 
     public function testNoOvertime()
     {
-        $this->checkNoOvertime(self::REGULAR_ON_SITE_INDEX, false);
-        $this->checkNoOvertime(self::FREELANCE_OFF_SITE_INDEX, true);
-        $this->checkNoOvertime(self::SALES_INDEX, true);
-        $this->checkNoOvertime(self::REGULAR_OFF_SITE_INDEX, true);
-        $this->checkNoOvertime(self::FREELANCE_ON_SITE_INDEX, false);
+        $this->checkNoOvertime(self::REGULAR_ON_SITE_INDEX);
+        $this->checkNoOvertime(self::FREELANCE_OFF_SITE_INDEX);
+        $this->checkNoOvertime(self::SALES_INDEX);
+        $this->checkNoOvertime(self::REGULAR_OFF_SITE_INDEX);
+        $this->checkNoOvertime(self::FREELANCE_ON_SITE_INDEX);
     }
 
     private function checkRegularOvertime($empIndex, $isSales)
@@ -223,6 +223,52 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkRegularOvertime(self::REGULAR_ON_SITE_INDEX, false);
         $this->checkRegularOvertime(self::REGULAR_OFF_SITE_INDEX, false);
         $this->checkRegularOvertime(self::SALES_INDEX, true);
+    }
+
+    private function checkUndertime($empIndex)
+    {
+        $attUtil = new AttendanceUtil();
+
+        $this->punchRegularDay($empIndex, '2020-01-01'); // Wednesday
+        $this->punchRegularDay($empIndex, '2020-01-02');
+        $this->punchRegularDay($empIndex, '2020-01-03');
+        $this->punchRegularSaturday($empIndex, '2020-01-04');
+        $this->punchRegularDay($empIndex, '2020-01-06');
+        $this->punchRegularDay($empIndex, '2020-01-07');
+        $this->punchRegularDay($empIndex, '2020-01-08');
+        $this->punchRegularDay($empIndex, '2020-01-09');
+        $this->punchRegularDay($empIndex, '2020-01-10');
+        $this->punchRegularSaturday($empIndex, '2020-01-11');
+        $this->punchRegularDay($empIndex, '2020-01-13');
+        $this->punchRegularDay($empIndex, '2020-01-14');
+        // Punch 1 hour undertime
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 08:00:00',
+            'out_time' => '2020-01-15 12:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-15 13:00:00',
+            'out_time' => '2020-01-15 16:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
+        $this->assertEquals($sum['t'], (11*8 + 2*7 - 1)*60*60);
+        $this->assertEquals($sum['r'], $sum['t']);
+        $this->assertEquals($sum['o'], -1*60*60);
+        $this->assertEquals($sum['d'], 0);
+    }
+
+    public function testUndertime()
+    {
+        $this->checkUndertime(self::REGULAR_ON_SITE_INDEX);
+        $this->checkUndertime(self::FREELANCE_OFF_SITE_INDEX);
+        $this->checkUndertime(self::SALES_INDEX);
+        $this->checkUndertime(self::REGULAR_OFF_SITE_INDEX);
+        $this->checkUndertime(self::FREELANCE_ON_SITE_INDEX);
     }
 
     public function testIgnoreEarlyClockIn()
