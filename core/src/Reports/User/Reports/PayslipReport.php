@@ -11,6 +11,44 @@ use Reports\Admin\Api\PDFReportBuilderInterface;
 
 class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterface
 {
+    public function getPayslipData($payslipTemplateFields, $payrollId, $employeeId)
+    {
+        $result = array();
+
+        foreach ($payslipTemplateFields as $field) {
+            if ($field['type'] == 'Payroll Column') {
+                $col = new PayrollColumn();
+                $col->Load("id = ?", $field['payrollColumn']);
+                if (empty($col->id)) {
+                    continue;
+                }
+                $payrollData = new PayrollData();
+                $payrollData->Load(
+                    "payroll = ? and payroll_item = ? and employee = ?",
+                    array(
+                        $payrollId,
+                        $col->id,
+                        $employeeId));
+
+                if (empty($payrollData->id)) {
+                    continue;
+                }
+
+                $field['value'] = $payrollData->amount;
+
+                if (empty($field['label'])) {
+                    $field['label'] = $col->name;
+                }
+            }
+
+            if ($field['status'] == 'Show') {
+                $result[] = $field;
+            }
+        }
+
+        return $result;
+    }
+
     public function getData($report, $request)
     {
         $data = $this->getDefaultData();
@@ -33,40 +71,11 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         $fields = json_decode($payslipTemplate->data, true);
 
-        foreach ($fields as $field) {
-            if ($field['type'] == 'Payroll Column') {
-                $col = new PayrollColumn();
-                $col->Load("id = ?", $field['payrollColumn']);
-                if (empty($col->id)) {
-                    continue;
-                }
-                $payrollData = new PayrollData();
-                $payrollData->Load(
-                    "payroll = ? and payroll_item = ? and employee = ?",
-                    array(
-                        $request['payroll'],
-                        $col->id, BaseService::getInstance()->getCurrentProfileId()
-                    )
-                );
-
-                if (empty($payrollData->id)) {
-                    continue;
-                }
-
-                $field['value'] = $payrollData->amount;
-
-                if (empty($field['label'])) {
-                    $field['label'] = $col->name;
-                }
-            }
-
-            if ($field['status'] == 'Show') {
-                $data['fields'][] = $field;
-            }
-        }
+        $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $data['fields'] = $this->getPayslipData($fields, $request['payroll'], $employeeId);
         $employee = BaseService::getInstance()->getElement(
             'Employee',
-            BaseService::getInstance()->getCurrentProfileId(),
+            $employeeId,
             null,
             true
         );
