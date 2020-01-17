@@ -11,6 +11,7 @@ namespace Reports\Admin\Api;
 use Classes\SettingsManager;
 use Classes\UIManager;
 use Utils\LogManager;
+use Twig\Extra\Intl\IntlExtension;
 
 class PDFReportBuilder extends ReportBuilder
 {
@@ -47,6 +48,7 @@ class PDFReportBuilder extends ReportBuilder
             );
         }
         $this->twig = new \Twig\Environment($loader, $twigOptions);
+        $this->twig->addExtension(new IntlExtension());
     }
 
     public function createReportFile($report, $data)

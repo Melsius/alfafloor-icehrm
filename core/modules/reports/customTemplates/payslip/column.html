@@ -3,6 +3,10 @@
         <b>{{field.label}}</b>
     </div>
     <div class="col-xs-6" style="text-align: right">
-        {{field.value}}
+        {% if (field.text == 'THB') %} 
+            ฿{{field.value|number_format(2, '.', ',')}}
+        {% else %}
+            {{field.value}}
+        {% endif %}
     </div>
 </div>
