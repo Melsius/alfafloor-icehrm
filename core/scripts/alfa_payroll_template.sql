@@ -43,7 +43,8 @@ INSERT INTO `Deductions` (`id`, `name`, `componentType`, `component`, `payrollCo
 
 INSERT INTO `DeductionTypes` (`id`, `name`, `description`) VALUES
 (1, 'Early withdrawal', 'An early withdrawal on the next payment period'),
-(2, 'Guarantee', 'Guarantee deduction withheld until a fixed maximum');
+(2, 'Guarantee', 'Guarantee deduction withheld until a fixed maximum'),
+(3, 'Electricity', 'Deduction for electricity usage');
 
 --
 -- Dumping data for table `IncentiveTypes`

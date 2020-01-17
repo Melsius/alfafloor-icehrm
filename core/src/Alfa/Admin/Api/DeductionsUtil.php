@@ -10,6 +10,7 @@ class DeductionsUtil
 {
     private static $EarlyWithdrawalId = 1;
     private static $GuaranteeId = 2;
+    private static $ElectricityId = 3;
 
     public $eDeductions;
 
@@ -48,6 +49,17 @@ class DeductionsUtil
     public function getGuaranteeTotal($employeeId, $startDate, $endDate)
     {
         $deductions = $this->getDeductions($employeeId, self::$GuaranteeId, $startDate, $endDate);
+
+        $sum = 0;
+        foreach ($deductions as &$deduction) {
+            $sum += $deduction->amount;
+        }
+        return $sum;
+    }
+
+    public function getElectricityTotal($employeeId, $startDate, $endDate)
+    {
+        $deductions = $this->getDeductions($employeeId, self::$ElectricityId, $startDate, $endDate);
 
         $sum = 0;
         foreach ($deductions as &$deduction) {

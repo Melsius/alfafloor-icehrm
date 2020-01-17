@@ -9,8 +9,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 <div class="span9">
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
-		<li class="active"><a id="tabEmployeeElectricity" href="#tabPageEmployeeElectricity"><?=t('Electricity')?></a></li>
-		<li><a id="tabIncentiveTypes" href="#tabPageIncentiveTypes"><?=t('Incentive Types')?></a></li>
+		<!--<li class="active"><a id="tabEmployeeElectricity" href="#tabPageEmployeeElectricity"><?=t('Electricity')?></a></li>-->
+		<li class="active"><a id="tabIncentiveTypes" href="#tabPageIncentiveTypes"><?=t('Incentive Types')?></a></li>
 		<li><a id="tabEmployeeIncentives" href="#tabPageEmployeeIncentives"><?=t('Employee Incentives')?></a></li>
 		<li><a id="tabDeductionTypes" href="#tabPageDeductionTypes"><?=t('Deduction Types')?></a></li>
 		<li><a id="tabEmployeeDeductions" href="#tabPageEmployeeDeductions"><?=t('Employee Deductions')?></a></li>
@@ -18,7 +18,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane active" id="tabPageEmployeeElectricity">
+		<div class="tab-pane" id="tabPageEmployeeElectricity">
 			<div id="EmployeeElectricity" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
 			</div>
@@ -27,7 +27,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 			</div>
 		</div>
 
-		<div class="tab-pane" id="tabPageIncentiveTypes">
+		<div class="tab-pane active" id="tabPageIncentiveTypes">
 			<div id="IncentiveTypes" class="reviewBlock" data-content="List" style="padding-left:5px;">
 			</div>
 			<div id="IncentiveTypesForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
@@ -100,7 +100,7 @@ modJsList['tabDeductionTypes'].setShowEdit(false);
 
 // employee deductions 
 modJsList['tabEmployeeDeductions'] = new EmployeeDeductionsAdapter('EmployeeDeductions');
-// TODO: remove edid/delete button for rows with a payroll
+// TODO: remove edi/delete button for rows with a payroll
 modJsList['tabEmployeeDeductions'].setShowAddNew(true);
 modJsList['tabEmployeeDeductions'].setShowDelete(true);
 modJsList['tabEmployeeDeductions'].setShowEdit(true);
@@ -111,7 +111,7 @@ modJsList['tabPublicHolidays'].setShowAddNew(true);
 modJsList['tabPublicHolidays'].setShowDelete(true);
 modJsList['tabPublicHolidays'].setShowEdit(true);
 
-var modJs = modJsList['tabEmployeeElectricity'];
+var modJs = modJsList['tabIncentiveTypes'];
 
 </script>
 <?php include APP_BASE_PATH.'footer.php';?>

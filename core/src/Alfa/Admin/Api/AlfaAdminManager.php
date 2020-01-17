@@ -72,5 +72,11 @@ class AlfaAdminManager extends AbstractModuleManager
             '\\Alfa\\Admin\\Api\\DeductionsUtil',
             'getGuaranteeTotal'
         );
+        $this->addCalculationHook(
+            'EmployeeDeductions_getElectricityTotal',
+            'Deductions: Electricity total',
+            '\\Alfa\\Admin\\Api\\DeductionsUtil',
+            'getElectricityTotal'
+        );
     }
 }
