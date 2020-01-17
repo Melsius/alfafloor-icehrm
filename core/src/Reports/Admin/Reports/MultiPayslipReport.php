@@ -42,11 +42,10 @@ class MultiPayslipReport extends PDFReportBuilder implements PDFReportBuilderInt
         $query = 'SELECT DISTINCT employee from `PayrollData` WHERE payroll = ?';
         $rs = $payrollData->DB()->Execute($query, array($request['payroll']));
         if (!$rs) {
-             \Utils\LogManager::getInstance()->info($payrollData->DB()->ErrorMsg());
+             \Utils\LogManager::getInstance()->error($payrollData->DB()->ErrorMsg());
              return array("ERROR","Error generating report");
         }
         foreach ($rs as $rowId => $row) {
-            \Utils\LogManager::getInstance()->debug(print_r($row, true));
             $employeeId = $row['employee'];
             $payslipData = array();
             $payslipData['fields'] = $payslipReport->getPayslipData($fields, $request['payroll'], $employeeId);
@@ -61,8 +60,6 @@ class MultiPayslipReport extends PDFReportBuilder implements PDFReportBuilderInt
             $data['payslips'][] = $payslipData;
         }
         $data['payroll'] = $payroll;
-
-        \Utils\LogManager::getInstance()->debug(print_r($data, true));
 
         return $data;
     }
