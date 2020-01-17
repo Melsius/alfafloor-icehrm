@@ -8,7 +8,7 @@
                 {% include 'payslip/companyname.html' with {'field': field} %}
             {% endif %}
         {% endfor %}
-        <div class="row">
+        <div class="row" style="margin-top:20px">
             <div class="col-xs-6">
                 <b style="font-size: 20px">Employee</b>
             </div>
@@ -27,4 +27,7 @@
     {% endfor %}
     </div>
     <div class="col-xs-2"></div>
+    <div class="col-xs-12" style="text-align:center">
+        ลงชื่อ..................................(พนักงาน)&nbsp;&nbsp;&nbsp;ลงชื่อ..................................(ผู้ตรวจสอบ)&nbsp;&nbsp;&nbsp;ลงชื่อ..................................(ฝ่ายการเงิน)
+    </div>
 </div>
