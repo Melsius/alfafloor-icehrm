@@ -35,7 +35,7 @@ class PDFReportBuilder extends ReportBuilder
         } else {
             $path = APP_BASE_PATH."admin/reports/customTemplates/";
         }
-        $loader = new \Twig_Loader_Filesystem($path);
+        $loader = new \Twig\Loader\FilesystemLoader($path);
         $twigOptions = array();
         //false
         if (defined('CACHE_THEME') && CACHE_THEME) {
@@ -46,7 +46,7 @@ class PDFReportBuilder extends ReportBuilder
                 "cache"=>false
             );
         }
-        $this->twig = new \Twig_Environment($loader, $twigOptions);
+        $this->twig = new \Twig\Environment($loader, $twigOptions);
     }
 
     public function createReportFile($report, $data)
@@ -58,7 +58,7 @@ class PDFReportBuilder extends ReportBuilder
 
         $this->initTemplateEngine($report);
 
-        $template = $this->twig->loadTemplate($this->getTemplate());
+        $template = $this->twig->load($this->getTemplate());
         $result = $template->render($data);
 
         $fp = fopen($fileFullName, 'w');
