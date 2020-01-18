@@ -112,6 +112,11 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
     modJsList['tabPayrollColumn'] = new PayrollColumnAdapter('PayrollColumn','PayrollColumn','','deduction_group, colorder');
     modJsList['tabPayrollColumn'].setRemoteTable(true);
+<?php if(isset($modulePermissions['perm']['Edit Payroll Columns']) && $modulePermissions['perm']['Edit Payroll Columns'] == "No"){?>
+    modJsList['tabPayrollColumn'].setShowAddNew(false);
+    modJsList['tabPayrollColumn'].setShowDelete(false);
+    modJsList['tabPayrollColumn'].setShowEdit(false);
+<?php }?>
     //modJsList['tabPayrollColumnTemplate'] = new PayrollColumnTemplateAdapter('PayrollColumnTemplate','PayrollColumnTemplate');
 
     modJsList['tabPayrollEmployee'] = new PayrollEmployeeAdapter('PayrollEmployee','PayrollEmployee');
@@ -119,6 +124,11 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
     modJsList['tabPayslipTemplate'] = new PayslipTemplateAdapter('PayslipTemplate','PayslipTemplate');
     modJsList['tabPayslipTemplate'].setRemoteTable(true);
+<?php if(isset($modulePermissions['perm']['Edit Payslip Templates']) && $modulePermissions['perm']['Edit Payslip Templates'] == "No"){?>
+    modJsList['tabPayslipTemplate'].setShowAddNew(false);
+    modJsList['tabPayslipTemplate'].setShowDelete(false);
+    modJsList['tabPayslipTemplate'].setShowEdit(false);
+<?php }?>
 
     var modJs = modJsList['tabPayrollEmployee'];
 

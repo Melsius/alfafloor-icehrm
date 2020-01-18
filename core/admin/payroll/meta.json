@@ -6,7 +6,12 @@
     "user_levels": [
         "Admin"
     ],
-    "permissions": [],
+    "permissions": {
+        "Manager": {
+            "Edit Payroll Columns": "No",
+            "Edit Payslip Templates": "No"
+        }
+    },
     "model_namespace": "\\Payroll\\Common\\Model",
     "manager": "\\Payroll\\Admin\\Api\\PayrollAdminManager"
 }
