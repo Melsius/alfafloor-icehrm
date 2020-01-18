@@ -11,6 +11,7 @@ class DeductionsUtil
     private static $EarlyWithdrawalId = 1;
     private static $GuaranteeId = 2;
     private static $ElectricityId = 3;
+    private static $SocialSecurityId = 4;
 
     public $eDeductions;
 
@@ -60,6 +61,17 @@ class DeductionsUtil
     public function getElectricityTotal($employeeId, $startDate, $endDate)
     {
         $deductions = $this->getDeductions($employeeId, self::$ElectricityId, $startDate, $endDate);
+
+        $sum = 0;
+        foreach ($deductions as &$deduction) {
+            $sum += $deduction->amount;
+        }
+        return $sum;
+    }
+
+    public function getSocialSecurityTotal($employeeId, $startDate, $endDate)
+    {
+        $deductions = $this->getDeductions($employeeId, self::$SocialSecurityId, $startDate, $endDate);
 
         $sum = 0;
         foreach ($deductions as &$deduction) {
