@@ -1963,3 +1963,9 @@ msgstr "Review Status"
 
 msgid "Alfa Dashboard"
 msgstr "Alfa Dashboard/อัลฟ่า"
+
+msgid "Employee Incentives"
+msgstr "Employee Incentives/รายรับเพิ่ม ของพนักงาน"
+
+msgid "Employee Deductions"
+msgstr "Employee Deductions/รายจ่ายเพิ่ม ของพนักงาน"

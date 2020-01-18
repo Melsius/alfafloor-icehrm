@@ -42,19 +42,19 @@ INSERT INTO `Deductions` (`id`, `name`, `componentType`, `component`, `payrollCo
 --
 
 INSERT INTO `DeductionTypes` (`id`, `name`, `description`) VALUES
-(1, 'Early withdrawal', 'An early withdrawal on the next payment period'),
-(2, 'Guarantee', 'Guarantee deduction withheld until a fixed maximum'),
-(3, 'Electricity', 'Deduction for electricity usage'),
-(4, 'Social Security', 'Social security deduction withheld until a fixed maximum');
+(1, 'Early withdrawal/หักเบิกร่วงหน้า', 'An early withdrawal on the next payment period'),
+(2, 'Guarantee/หักเงินสะสม', 'Guarantee deduction withheld until a fixed maximum'),
+(3, 'Electricity/ค่าไฟ', 'Deduction for usage of electricity'),
+(4, 'Social Security/ค่าประกันสังคม', 'Social security deduction withheld until a fixed maximum');
 
 --
 -- Dumping data for table `IncentiveTypes`
 --
 
 INSERT INTO `IncentiveTypes` (`id`, `name`, `description`) VALUES
-(1, 'Out-of-town', 'Incentive for heading out of town on a business trip'),
-(2, 'Forklift container unload', 'Incentive rewarded for operating the forklift when unloading a container'),
-(3, 'Second delivery trip', 'Incentive awarded for making a second delivery trip on one day');
+(1, 'Out-of-town/พิเศษออกต่างจังหวัด', 'Incentive for heading out of town on a business trip'),
+(2, 'Forklift container unload/พิเศษลงของ', 'Incentive rewarded for operating the forklift when unloading a container'),
+(3, 'Second delivery trip/พิเศษส่งของรอบสอง', 'Incentive awarded for making a second delivery trip on one day');
 
 --
 -- Dumping data for table `PayrollColumns`

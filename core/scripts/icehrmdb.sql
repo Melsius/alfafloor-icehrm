@@ -880,14 +880,14 @@ create table `Ethnicity` (
 
 CREATE TABLE `IncentiveTypes` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`name` varchar(35) CHARACTER SET utf8 NOT NULL,
+	`name` varchar(64) CHARACTER SET utf8 NOT NULL,
 	`description` text CHARACTER SET utf8 NOT NULL,
 	primary key  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `DeductionTypes` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`name` varchar(35) CHARACTER SET utf8 NOT NULL,
+	`name` varchar(64) CHARACTER SET utf8 NOT NULL,
 	`description` text CHARACTER SET utf8 NOT NULL,
 	primary key  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
