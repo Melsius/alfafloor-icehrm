@@ -84,5 +84,11 @@ class AlfaAdminManager extends AbstractModuleManager
             '\\Alfa\\Admin\\Api\\DeductionsUtil',
             'getSocialSecurityTotal'
         );
+        $this->addCalculationHook(
+            'EmployeeDeductions_getEtcTotal',
+            'Deductions: Etc total',
+            '\\Alfa\\Admin\\Api\\DeductionsUtil',
+            'getEtcTotal'
+        );
     }
 }

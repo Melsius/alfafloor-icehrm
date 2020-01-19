@@ -45,7 +45,8 @@ INSERT INTO `DeductionTypes` (`id`, `name`, `description`) VALUES
 (1, 'Early withdrawal/หักเบิกร่วงหน้า', 'An early withdrawal on the next payment period'),
 (2, 'Guarantee/หักเงินสะสม', 'Guarantee deduction withheld until a fixed maximum'),
 (3, 'Electricity/ค่าไฟ', 'Deduction for usage of electricity'),
-(4, 'Social Security/ค่าประกันสังคม', 'Social security deduction withheld until a fixed maximum');
+(4, 'Social Security/ค่าประกันสังคม', 'Social security deduction withheld until a fixed maximum'),
+(5, 'Etc./เป็นต้น', 'Additional deductions');
 
 --
 -- Dumping data for table `IncentiveTypes`
