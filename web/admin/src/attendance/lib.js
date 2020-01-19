@@ -267,7 +267,7 @@ class AttendanceAdapter extends AdapterBase {
     const photoButton = '<img class="tableActionButton" src="_BASE_images/map.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Show Photo" onclick="modJs.showPunchImages(_id_);return false;"></img>';
 
     let html;
-    if (this.photoAttendance === 1) {
+    if (this.photoAttendance == 1) {
       html = '<div style="width:80px;">_edit__delete__photo_</div>';
     } else {
       html = '<div style="width:80px;">_edit__delete_</div>';
@@ -275,13 +275,13 @@ class AttendanceAdapter extends AdapterBase {
 
     html = html.replace('_photo_', photoButton);
 
-    if (this.showDelete) {
+    if (this.showDelete && (data._org.automatic_event == '0' || this.user.user_level == 'Admin')) {
       html = html.replace('_delete_', deleteButton);
     } else {
       html = html.replace('_delete_', '');
     }
 
-    if (this.showEdit) {
+    if (this.showEdit && (data._org.automatic_event == '0' || this.user.user_level == 'Admin')) {
       html = html.replace('_edit_', editButton);
     } else {
       html = html.replace('_edit_', '');
