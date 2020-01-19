@@ -134,6 +134,8 @@ modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"
 <?php if(($user->user_level != "Admin") && ($user->user_level != "Manager")) { ?>
 modJsList['tabEmployee'].setShowAddNew(false);
 modJsList['tabEmployee'].setShowDelete(false);
+<?php } elseif ($user->user_level == "Manager") { ?>
+modJsList['tabEmployee'].setShowDelete(false);
 <?php } ?>
 
 modJsList['tabEmployee'].setRemoteTable(true);
