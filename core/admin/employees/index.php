@@ -130,12 +130,10 @@ $customFields = \Classes\BaseService::getInstance()->getCustomFields("Employee")
 </div>
 <script>
 var modJsList = new Array();
-<?php if($user->user_level != "Admin"){ ?>
 modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"Active"});
+<?php if(($user->user_level != "Admin") && ($user->user_level != "Manager")) { ?>
 modJsList['tabEmployee'].setShowAddNew(false);
 modJsList['tabEmployee'].setShowDelete(false);
-<?php }else{ ?>
-modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"Active"});
 <?php } ?>
 
 modJsList['tabEmployee'].setRemoteTable(true);
