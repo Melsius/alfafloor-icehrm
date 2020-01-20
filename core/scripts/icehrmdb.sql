@@ -1010,6 +1010,15 @@ CREATE TABLE `PayrollColumns` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB default charset=utf8;
 
+CREATE TABLE `PayrollColumnTranslations` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `language` varchar(100) DEFAULT NULL,
+  `payroll_column` int(11) NOT NULL,
+  CONSTRAINT `Fk_PayrollColumnTranslations_PayrollColumns` FOREIGN KEY (`payroll_column`) REFERENCES `PayrollColumns` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 create table `EmployeeElectricity` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
 	`employee` bigint(20) NOT NULL,
