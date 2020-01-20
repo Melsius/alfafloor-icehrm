@@ -1187,7 +1187,8 @@ INSERT INTO `SupportedLanguages` (`name`, `description`) VALUES
     ('zh', 'Chinese'),
     ('ja', 'Japanese'),
     ('hi', 'Hindi'),
-    ('es', 'Spanish');
+    ('es', 'Spanish'),
+    ('th', 'Thai');
 
 INSERT INTO `LeavePeriods` (`id`, `name`, `date_start`, `date_end`, `status`) VALUES
   (3, 'Year 2015', '2015-01-01', '2015-12-31', 'Active'),
