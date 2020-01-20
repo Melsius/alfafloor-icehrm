@@ -14,6 +14,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <li class="active"><a id="tabPayrollEmployee" href="#tabPagePayrollEmployee"><?=t('Company Payroll')?></a></li>
         <li class=""><a id="tabPayroll" href="#tabPagePayroll"><?=t('Payroll Reports')?></a></li>
         <li class=""><a id="tabPayrollColumn" href="#tabPagePayrollColumn"><?=t('Payroll Columns')?></a></li>
+        <li class=""><a id="tabPayrollColumnTranslation" href="#tabPagePayrollColumnTranslation"><?=t('Payroll Column Translations')?></a></li>
         <li class=""><a id="tabDeductionGroup" href="#tabPageDeductionGroup"><?=t('Calculation Groups')?></a></li>
         <li class=""><a id="tabDeduction" href="#tabPageDeduction"><?=t('Calculation Methods')?></a></li>
         <li class=""><a id="tabPayslipTemplate" href="#tabPagePayslipTemplate"><?=t('Payslip Templates')?></a></li>
@@ -52,6 +53,15 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
             <div id="PayrollColumnForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tabPagePayrollColumnTranslation">
+            <div id="PayrollColumnTranslation" class="reviewBlock" data-content="List" style="padding-left:5px;">
+
+            </div>
+            <div id="PayrollColumnTranslationForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 
             </div>
         </div>
@@ -118,6 +128,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     modJsList['tabPayrollColumn'].setShowEdit(false);
 <?php }?>
     //modJsList['tabPayrollColumnTemplate'] = new PayrollColumnTemplateAdapter('PayrollColumnTemplate','PayrollColumnTemplate');
+    modJsList['tabPayrollColumnTranslation'] = new PayrollColumnTranslationAdapter('PayrollColumnTranslation');
+    modJsList['tabPayrollColumnTranslation'].setRemoteTable(true);
 
     modJsList['tabPayrollEmployee'] = new PayrollEmployeeAdapter('PayrollEmployee','PayrollEmployee');
     modJsList['tabPayrollEmployee'].setRemoteTable(true);

@@ -340,6 +340,46 @@ class PayrollColumnAdapter extends AdapterBase {
 
 
 /**
+ * PayrollColumnTranslationAdapter
+ */
+
+class PayrollColumnTranslationAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'name',
+      'language',
+      'payroll_column',
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Translation' },
+      { sTitle: 'Language' },
+      { sTitle: 'Payroll Column' },
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['name', { label: 'Translation', type: 'text', validation: '' }],
+      ['language', {label: 'Language', type: 'select2', 'allow-null': false, 'remote-source': ['SupportedLanguage', 'name', 'description'] }],
+      ['payroll_column', { label: 'Payroll Column', type: 'select2', 'remote-source': ['PayrollColumn', 'id', 'name'] }],
+    ];
+  }
+
+  getFilters() {
+    return [
+      ['language', {label: 'Language', type: 'select2', 'allow-null': false, 'remote-source': ['SupportedLanguage', 'name', 'description'] }],
+    ];
+  }
+}
+
+
+/**
  * PayrollColumnTemplateAdapter
  */
 
@@ -625,6 +665,7 @@ module.exports = {
   PayrollAdapter,
   PayrollDataAdapter,
   PayrollColumnAdapter,
+  PayrollColumnTranslationAdapter,
   PayrollColumnTemplateAdapter,
   PayrollEmployeeAdapter,
   DeductionAdapter,

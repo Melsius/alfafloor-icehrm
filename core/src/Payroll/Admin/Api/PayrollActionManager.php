@@ -17,10 +17,12 @@ use Payroll\Common\Model\Deduction;
 use Payroll\Common\Model\Payroll;
 use Payroll\Common\Model\PayrollCalculations;
 use Payroll\Common\Model\PayrollColumn;
+use Payroll\Common\Model\PayrollColumnTranslation;
 use Payroll\Common\Model\PayrollData;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\PayrollEmployee;
 use Salary\Common\Model\SalaryComponent;
+use Metadata\Common\Model\SupportedLanguage;
 use Utils\LogManager;
 use Utils\Math\EvalMath;
 
@@ -319,6 +321,17 @@ class PayrollActionManager extends SubActionManager
         return $allowedIds;
     }
 
+    public function findColumnTranslation($payrollColumn, $language)
+    {
+        $translation = new PayrollColumnTranslation();
+        $translation->Load('payroll_column = ? AND language = ?',
+            array($payrollColumn->id, $language));
+        if ($translation->payroll_column == $payrollColumn->id) {
+            return $translation->name;
+        }
+        return $payrollColumn->name;
+    }
+
     public function getAllData($req)
     {
 
@@ -381,6 +394,19 @@ class PayrollActionManager extends SubActionManager
             "enabled = ? and id in (".implode(",", $columnList).") order by colorder, id",
             array('Yes')
         );
+
+        $user = BaseService::getInstance()->getCurrentUser();
+        $supportedLanguage = new SupportedLanguage();
+        $supportedLanguage->Load('id = ?', [$user->lang]);
+        if ($supportedLanguage->id == $user->lang) {
+            $language = $supportedLanguage->name;
+        }
+        else {
+            $language = SettingsManager::getInstance()->getSetting('System: Language');
+        }
+        foreach ($columns as $column) {
+            $column->name = $this->findColumnTranslation($column, $language);
+        }
 
         $cost = new $valueTable();
         $costs = $cost->Find("payroll = ?", array($req->payrollId));

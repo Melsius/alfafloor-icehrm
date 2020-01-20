@@ -24,6 +24,7 @@ class PayrollAdminManager extends AbstractModuleManager
 
         $this->addModelClass('Payroll');
         $this->addModelClass('PayrollColumn');
+        $this->addModelClass('PayrollColumnTranslation');
         $this->addModelClass('PayrollData');
         $this->addModelClass('PayFrequency');
         $this->addModelClass('PayrollColumnTemplate');

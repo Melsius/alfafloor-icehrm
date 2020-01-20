@@ -3,6 +3,7 @@ import {
   PayrollAdapter,
   PayrollDataAdapter,
   PayrollColumnAdapter,
+  PayrollColumnTranslationAdapter,
   PayrollColumnTemplateAdapter,
   PayrollEmployeeAdapter,
   DeductionAdapter,
@@ -14,6 +15,7 @@ window.PaydayAdapter = PaydayAdapter;
 window.PayrollAdapter = PayrollAdapter;
 window.PayrollDataAdapter = PayrollDataAdapter;
 window.PayrollColumnAdapter = PayrollColumnAdapter;
+window.PayrollColumnTranslationAdapter = PayrollColumnTranslationAdapter;
 window.PayrollColumnTemplateAdapter = PayrollColumnTemplateAdapter;
 window.PayrollEmployeeAdapter = PayrollEmployeeAdapter;
 window.DeductionAdapter = DeductionAdapter;
