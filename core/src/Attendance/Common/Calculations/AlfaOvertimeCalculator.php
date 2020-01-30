@@ -31,7 +31,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
         $salaryGroup = new DeductionGroup();
         $salaryGroup->Load('id = ?', $payrollEmployee->deduction_group);
-        if ($salaryGroup->name == 'Sales') {
+        if (strpos(strtolower($salaryGroup->name), "sales") !== false) {
             $this->offsiteEmployee = true;
             $this->salesEmployee = true;
         } elseif (strpos(strtolower($salaryGroup->name), "off-site") !== false) {
