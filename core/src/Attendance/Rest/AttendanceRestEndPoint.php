@@ -338,7 +338,7 @@ class AttendanceRestEndPoint extends RestEndPoint
         }
 
         //compare dates
-        if (!empty($outDateTime) && strtotime($outDateTime) <= strtotime($inDateTime)) {
+        if (!empty($outDateTime) && strtotime($outDateTime) < strtotime($inDateTime)) {
             return new IceResponse(IceResponse::ERROR, 'Punch-in time should be earlier than Punch-out time');
         }
 
