@@ -103,6 +103,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                         $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
                         $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
                         $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
+                        if ($atTimeByDay[$curDate] < 0) {
+                            $atTimeByDay[$curDate] = 0;
+                        }
                     }
                     // Update loop variables
                     $curDate = $atDate;
@@ -116,6 +119,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
                 $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
                 $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
+                if ($atTimeByDay[$curDate] < 0) {
+                    $atTimeByDay[$curDate] = 0;
+                }
             }
 
         } else {
