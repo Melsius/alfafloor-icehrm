@@ -30,7 +30,7 @@ class AttendanceAdapter extends AdapterBase {
       { sTitle: 'Time-In' },
       { sTitle: 'Time-Out' },
       { sTitle: 'Note' },
-      { sTitle: 'Automatic Event' },
+      { sTitle: 'Auto' },
     ];
   }
 
@@ -69,24 +69,28 @@ class AttendanceAdapter extends AdapterBase {
           fnRender(data, cell) {
             return that.preProcessRemoteTableData(data, cell, 2);
           },
-          aTargets: [2],
+          sWidth: "130px",
+          aTargets: [2], // in_time
         },
         {
           fnRender(data, cell) {
             return that.preProcessRemoteTableData(data, cell, 3);
           },
-          aTargets: [3],
-        },
-        {
-          fnRender(data, cell) {
-            return that.preProcessRemoteTableData(data, cell, 4);
-          },
-          aTargets: [4],
+          sWidth: "90px",
+          aTargets: [3], // out_time
         },
         {
           fnRender: that.getActionButtons,
           aTargets: [that.getDataMapping().length],
         },
+        {
+          sWidth: "40%",
+          aTargets: [4] // note
+        },
+        {
+          sWidth: "40px",
+          aTargets: [5] // automatic_event
+        }
       ],
     };
     return dataTableParams;
@@ -103,13 +107,6 @@ class AttendanceAdapter extends AdapterBase {
         return '';
       }
       return Date.parse(cell).toString('MMM d  <b>HH:mm</b>');
-    } if (id === 4) {
-      if (cell !== undefined && cell !== null) {
-        if (cell.length > 10) {
-          return `${cell.substring(0, 10)}..`;
-        }
-      }
-      return cell;
     }
   }
 
