@@ -11,7 +11,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 {
     const ROUNDTOSECONDS = 15*60;
     const HOURSBYDAY = [
-        8, 8, 8, 8, 8, 7, 0
+        0, 8, 8, 8, 8, 8, 7
     ];
     const BREAKSECONDS = 60*60;
 
@@ -77,6 +77,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             }
         }
         $time -= $time % self::ROUNDTOSECONDS;
+
         return $time;
     }
 
