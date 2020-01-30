@@ -158,7 +158,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $result['t'] += $time;
             if ($this->freelanceEmployee) {
                 $dateTime = new \DateTime($date);
-                $this->totalTimeInPeriod += self::HOURSBYDAY[$dateTime->format('w')-1] * 3600;
+                $this->totalTimeInPeriod += self::HOURSBYDAY[$dateTime->format('w')] * 3600;
             }
         }
 
