@@ -43,16 +43,22 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
         if (!$this->freelanceEmployee) {
             while ($date <= $endDate) {
-                $dateStr = date('Y-m-d', $date);
-                $publicHoliday = new PublicHoliday();
-                $publicHoliday->Load('date = ?', $dateStr);
-                if ($publicHoliday->date != $dateStr) {
-                    // Date not in public holidays
-                    $this->totalTimeInPeriod += self::HOURSBYDAY[date('w', $date)] * 3600;
-                }
+                $this->totalTimeInPeriod += self::getExpectedTimeSeconds($date);
                 $date = strtotime("+1 day", $date); 
             }
         }
+    }
+
+    private function getExpectedTimeSeconds($date)
+    {
+        $dateStr = date('Y-m-d', $date);
+        $publicHoliday = new PublicHoliday();
+        $publicHoliday->Load('date = ?', $dateStr);
+        if ($publicHoliday->date == $dateStr) {
+            return 0;
+        }
+        // Date not in public holidays
+        return self::HOURSBYDAY[date('w', $date)] * 3600;
     }
 
     private function roundTimeStr($timeStr)
@@ -160,15 +166,19 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             'o' => 0,  // overtime / undertime
             'd' => 0); // double time -- always 0
 
+        $totalTimeInPeriod = $this->totalTimeInPeriod;
+        if ($this->freelanceEmployee) {
+            $totalTimeInPeriod = 0;
+        }
         foreach ($atTimeByDay as $date => $time) {
             $result['t'] += $time;
             if ($this->freelanceEmployee) {
                 $dateTime = new \DateTime($date);
-                $this->totalTimeInPeriod += self::HOURSBYDAY[$dateTime->format('w')] * 3600;
+                $totalTimeInPeriod += self::getExpectedTimeSeconds($dateTime->format('U'));
             }
         }
 
-        $result['o'] = $result['t'] - $this->totalTimeInPeriod;
+        $result['o'] = $result['t'] - $totalTimeInPeriod;
         if ($result['o'] > 0) {
             $result['r'] = $result['t'] - $result['o'];
             if ($this->salesEmployee) {
