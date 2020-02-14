@@ -3,22 +3,20 @@ namespace Attendance\Common\Calculations;
 
 use Classes\SettingsManager;
 use Attendance\Common\Calculations\BasicOvertimeCalculator;
+use Attendance\Admin\Api\AttendanceUtil;
 use Salary\Common\Model\PayrollEmployee;
 use Payroll\Common\Model\DeductionGroup;
-use Alfa\Common\Model\PublicHoliday;
 
 class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
     const ROUNDTOSECONDS = 15*60;
-    const HOURSBYDAY = [
-        0, 8, 8, 8, 8, 8, 7
-    ];
     const BREAKSECONDS = 60*60;
 
     private $totalTimeInPeriod = 0;
     private $offsiteEmployee = false;
     private $salesEmployee = false;
     private $freelanceEmployee = false;
+    private $attendanceUtil;
 
     function __construct($employeeId, $startDateStr, $endDateStr)
     {
@@ -41,24 +39,13 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $this->freelanceEmployee = true;
         }
 
+        $this->attendanceUtil = new AttendanceUtil();
         if (!$this->freelanceEmployee) {
             while ($date <= $endDate) {
-                $this->totalTimeInPeriod += self::getExpectedTimeSeconds($date);
+                $this->totalTimeInPeriod += $this->attendanceUtil->getExpectedTimeSeconds($date);
                 $date = strtotime("+1 day", $date); 
             }
         }
-    }
-
-    private function getExpectedTimeSeconds($date)
-    {
-        $dateStr = date('Y-m-d', $date);
-        $publicHoliday = new PublicHoliday();
-        $publicHoliday->Load('date = ?', $dateStr);
-        if ($publicHoliday->date == $dateStr) {
-            return 0;
-        }
-        // Date not in public holidays
-        return self::HOURSBYDAY[date('w', $date)] * 3600;
     }
 
     private function roundTimeStr($timeStr)
@@ -89,7 +76,6 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
     public function createAttendanceSummary($atts)
     {
-
         $atTimeByDay = array();
 
         if ($this->offsiteEmployee) {
@@ -174,7 +160,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $result['t'] += $time;
             if ($this->freelanceEmployee) {
                 $dateTime = new \DateTime($date);
-                $totalTimeInPeriod += self::getExpectedTimeSeconds($dateTime->format('U'));
+                $totalTimeInPeriod += $this->attendanceUtil->getExpectedTimeSeconds($dateTime->format('U'));
             }
         }
 

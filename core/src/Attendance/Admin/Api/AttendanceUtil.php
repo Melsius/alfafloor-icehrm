@@ -9,10 +9,28 @@
 namespace Attendance\Admin\Api;
 
 use Attendance\Common\Model\Attendance;
+use Alfa\Common\Model\PublicHoliday;
 use Classes\SettingsManager;
 
 class AttendanceUtil
 {
+    const HOURSBYDAY = [
+        0, 8, 8, 8, 8, 8, 7
+    ];
+
+    // Expects $date as Unix time in seconds
+    public function getExpectedTimeSeconds($date)
+    {
+        $dateStr = date('Y-m-d', $date);
+        $publicHoliday = new PublicHoliday();
+        $publicHoliday->Load('date = ?', $dateStr);
+        if ($publicHoliday->date == $dateStr) {
+            return 0;
+        }
+        // Date not in public holidays
+        return self::HOURSBYDAY[date('w', $date)] * 3600;
+    }
+
     public function getAttendanceSummary($employeeId, $startDate, $endDate)
     {
         $startTime = $startDate." 00:00:00";
@@ -89,6 +107,12 @@ class AttendanceUtil
         foreach ($atts as &$att) {
             $time = strtotime($att->in_time);
             $dateStr = date('Y-m-d',$time);
+            $dateTime = new \DateTime($date);
+            if ($this->getExpectedTimeSeconds($datetime->format('U') == 0)) {
+                /* Must've been a Sunday or public holiday. 
+                 * Only count actual working days */
+                continue;
+            }
             if ($curDay != $dateStr) {
                 $curDay = $dateStr;
                 $daysCount++;
