@@ -107,8 +107,8 @@ class AttendanceUtil
         foreach ($atts as &$att) {
             $time = strtotime($att->in_time);
             $dateStr = date('Y-m-d',$time);
-            $dateTime = new \DateTime($date);
-            if ($this->getExpectedTimeSeconds($datetime->format('U') == 0)) {
+            $datetime = new \DateTime($dateStr);
+            if ($this->getExpectedTimeSeconds($datetime->format('U')) == 0) {
                 /* Must've been a Sunday or public holiday. 
                  * Only count actual working days */
                 continue;
