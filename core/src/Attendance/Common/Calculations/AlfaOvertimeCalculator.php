@@ -58,7 +58,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
     private function roundFirstInTimeStr($timeStr)
     {
         $time = strtotime($timeStr);
-        $ssinceToday = date('h', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
+        $ssinceToday = date('H', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
 
         if ($ssinceToday < 8*60*60) {
             $time += (8*60*60 - $ssinceToday);
@@ -94,6 +94,12 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                         // Calculate time for curDate
                         $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
                         $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
+
+                        if ($diff <= 0) {
+                            \Utils\LogManager::getInstance()->error(
+                                "Negative time calculated for ".
+                                $curDate.": ".($diff/3600)." from ".$firstAtEntry->in_time." to ".$prevAtEntry->out_time);
+                        }
                         $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
                         if ($atTimeByDay[$curDate] < 0) {
                             $atTimeByDay[$curDate] = 0;

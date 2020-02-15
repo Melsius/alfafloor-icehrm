@@ -111,6 +111,16 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkOffsiteBreak(self::FREELANCE_ON_SITE_INDEX, false);
     }
 
+    private function addPunch($empIndex, $in_time, $out_time)
+    {
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => $in_time,
+            'out_time' => $out_time
+        ]));
+        $this->actionMgr->savePunch($punch);
+    }
+
     private function punchRegularDay($empIndex, $date)
     {
         $punch = json_decode(json_encode([
@@ -433,5 +443,35 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->assertEquals($sum['t'], 2*8*60*60);
         $this->assertEquals($sum['r'], 1*8*60*60); // The previously booked day is now overtime
         $this->assertEquals($sum['o'], 1*8*60*60);
+    }
+
+    public function testRealWorld()
+    {
+        $attUtil = new AttendanceUtil();
+        $empIndex = self::FREELANCE_OFF_SITE_INDEX;
+
+        $this->addPunch($empIndex, '2020-01-30 07:24', '2020-01-30 17:00');
+        $this->addPunch($empIndex, '2020-01-31 07:33', '2020-01-31 17:05');
+        $this->addPunch($empIndex, '2020-02-01 07:41', '2020-02-01 16:00');
+        $this->addPunch($empIndex, '2020-02-03 07:46', '2020-02-03 17:04');
+        $this->addPunch($empIndex, '2020-02-04 07:37', '2020-02-04 17:04');
+        $this->addPunch($empIndex, '2020-02-05 06:02', '2020-02-05 17:04');
+        $this->addPunch($empIndex, '2020-02-05 17:05', '2020-02-05 19:05');
+        $this->addPunch($empIndex, '2020-02-06 06:01', '2020-02-06 17:03');
+        $this->addPunch($empIndex, '2020-02-06 17:04', '2020-02-06 19:04');
+        $this->addPunch($empIndex, '2020-02-07 05:48', '2020-02-07 17:05');
+        $this->addPunch($empIndex, '2020-02-07 17:06', '2020-02-07 19:06');
+        $this->addPunch($empIndex, '2020-02-09 13:00', '2020-02-09 15:00');
+        $this->addPunch($empIndex, '2020-02-10 07:34', '2020-02-10 17:40');
+        $this->addPunch($empIndex, '2020-02-10 17:41', '2020-02-10 17:42');
+        $this->addPunch($empIndex, '2020-02-11 07:38', '2020-02-11 17:03');
+        $this->addPunch($empIndex, '2020-02-12 07:39', '2020-02-12 17:05');
+        $this->addPunch($empIndex, '2020-02-13 06:24', '2020-02-13 17:03');
+        $this->addPunch($empIndex, '2020-02-13 17:04', '2020-02-13 18:30');
+
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-30', '2020-02-13');
+        $this->assertEquals($sum['t']/3600, 104);
+        $this->assertEquals($sum['r']/3600, 95);
+        $this->assertEquals($sum['o']/3600, 9);
     }
 }
