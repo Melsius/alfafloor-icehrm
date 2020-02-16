@@ -11,6 +11,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 {
     const ROUNDTOSECONDS = 15*60;
     const BREAKSECONDS = 60*60;
+    const BREAKTIMESTART = 12*60*60;
+    const BREAKTIMEEND = 13*60*60;
 
     private $totalTimeInPeriod = 0;
     private $offsiteEmployee = false;
@@ -55,10 +57,15 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $time;
     }
 
+    private function calcSecondsSinceToday($time)
+    {
+        return date('H', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
+    }
+
     private function roundFirstInTimeStr($timeStr)
     {
         $time = strtotime($timeStr);
-        $ssinceToday = date('H', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
+        $ssinceToday = $this->calcSecondsSinceToday($time);
 
         if ($ssinceToday < 8*60*60) {
             $time += (8*60*60 - $ssinceToday);
@@ -71,6 +78,33 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         }
         $time -= $time % self::ROUNDTOSECONDS;
 
+        return $time;
+    }
+
+    private function calcOffsiteTimeWorked($inTimeStr, $outTimeStr)
+    {
+        // Calculate time for curDate
+        $roundedInTime = $this->roundFirstInTimeStr($inTimeStr);
+        $roundedOutTime = $this->roundTimeStr($outTimeStr);
+        $time = $roundedOutTime - $roundedInTime;
+
+        if ($time <= 0) {
+            \Utils\LogManager::getInstance()->error(
+                "Negative time calculated for ".
+                $curDate.": ".($time/3600)." from ".$firstAtEntry->in_time." to ".$prevAtEntry->out_time);
+        }
+
+        $inTime = strtotime($inTimeStr);
+        $outTime = strtotime($outTimeStr);
+        if ($this->calcSecondsSinceToday($inTime) <= self::BREAKTIMESTART &&
+            $this->calcSecondsSinceToday($outTime) >= self::BREAKTIMEEND) {
+            // Time period contains a break
+            $time = $time - self::BREAKSECONDS;
+        }
+
+        if ($time < 0) {
+            return 0;
+        }
         return $time;
     }
 
@@ -91,19 +125,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
                 if ($curDate != $atDate) {
                     if ($curDate != '') {
-                        // Calculate time for curDate
-                        $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
-                        $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
-
-                        if ($diff <= 0) {
-                            \Utils\LogManager::getInstance()->error(
-                                "Negative time calculated for ".
-                                $curDate.": ".($diff/3600)." from ".$firstAtEntry->in_time." to ".$prevAtEntry->out_time);
-                        }
-                        $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
-                        if ($atTimeByDay[$curDate] < 0) {
-                            $atTimeByDay[$curDate] = 0;
-                        }
+                        $atTimeByDay[$curDate] = $this->calcOffsiteTimeWorked($firstAtEntry->in_time, $prevAtEntry->out_time);
                     }
                     // Update loop variables
                     $curDate = $atDate;
@@ -113,15 +135,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 $prevAtEntry = $atEntry;
             }
             if ($curDate != '') {
-                // Calculate time for the remaining date
-                $inTime = $this->roundFirstInTimeStr($firstAtEntry->in_time);
-                $diff = $this->roundTimeStr($prevAtEntry->out_time) - $inTime;
-                $atTimeByDay[$curDate] = $diff - self::BREAKSECONDS;
-                if ($atTimeByDay[$curDate] < 0) {
-                    $atTimeByDay[$curDate] = 0;
-                }
+                $atTimeByDay[$curDate] = $this->calcOffsiteTimeWorked($firstAtEntry->in_time, $prevAtEntry->out_time);
             }
-
         } else {
             foreach ($atts as $atEntry) {
                 if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {

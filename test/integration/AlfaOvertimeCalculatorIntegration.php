@@ -78,9 +78,9 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-06', '2020-01-06');
         if ($isOffsite) {
-            $this->assertEquals($sum['t'], 8*60*60);
+            $this->assertEquals($sum['t']/3600, 8);
         } else {
-            $this->assertEquals($sum['t'], 9*60*60);
+            $this->assertEquals($sum['t']/3600, 9);
         }
 
         // Multi-punch
@@ -95,11 +95,43 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
             'in_time' => '2020-01-07 13:00:00',
             'out_time' => '2020-01-07 17:00:00'
         ]));
+        // One day before 12 only (start of break)
+        $this->actionMgr->savePunch($punch);
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-08 08:00:00',
+            'out_time' => '2020-01-08 12:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+        // One day after 13 only (end of break)
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-09 13:00:00',
+            'out_time' => '2020-01-09 17:00:00'
+        ]));
+        $this->actionMgr->savePunch($punch);
+        // One day less than the breaktime (1 hour)
+        $punch = json_decode(json_encode([
+            'employee' => $this->ids[$empIndex],
+            'in_time' => '2020-01-10 13:00:00',
+            'out_time' => '2020-01-10 14:00:00'
+        ]));
         $this->actionMgr->savePunch($punch);
 
-        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-07', '2020-01-07');
-        // Should be the same for both groups
-        $this->assertEquals($sum['t'], 8*60*60);
+        $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-07', '2020-01-10');
+        if ($empIndex == self::SALES_INDEX) {
+            // Reduce by morning grace period
+            $this->assertEquals($sum['t']/3600, 17 + 0.25*2);
+            $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-08', '2020-01-08');
+            $this->assertEquals($sum['t']/3600, 4);
+            $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-09', '2020-01-09');
+            $this->assertEquals($sum['t']/3600, 4.25);
+            $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-10', '2020-01-10');
+            $this->assertEquals($sum['t']/3600, 1.25);
+        } else {
+            // Should be the same for both groups
+            $this->assertEquals($sum['t']/3600, 17);
+        }
     }
 
     public function testOffOnGroupsBreak()
@@ -470,8 +502,8 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->addPunch($empIndex, '2020-02-13 17:04', '2020-02-13 18:30');
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-30', '2020-02-13');
-        $this->assertEquals($sum['t']/3600, 104);
+        $this->assertEquals($sum['t']/3600, 105);
         $this->assertEquals($sum['r']/3600, 95);
-        $this->assertEquals($sum['o']/3600, 9);
+        $this->assertEquals($sum['o']/3600, 10);
     }
 }
