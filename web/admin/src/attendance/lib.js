@@ -46,7 +46,7 @@ class AttendanceAdapter extends AdapterBase {
       ['out_time', { label: 'Time-Out', type: 'datetime', validation: 'none' }],
       ['note', { label: 'Note', type: 'textarea', validation: 'none' }],
       ['automatic_event', { label: 'Automatic Event', type: 'select', source: [[0, 'No'], [1, 'Yes']], validation: '' }],
-      ['approved_overtime', { label: 'Approved OT', type: 'number', customfields: "step='.25' min='0.00' max='24.00'" }],
+      ['approved_overtime', { label: 'Approved OT', type: 'number', customfields: "step='.25' min='0.00' max='24.00'", validation: 'none' }],
     ];
   }
 

@@ -19,6 +19,9 @@ class AttendanceHelper extends SubActionManager
         $outDateTime = $req->out_time;
         $outDate = "";
         $approvedOt = $req->approved_overtime;
+        if (empty($approvedOt)) {
+            $approvedOt = "0.0";
+        }
         if ($approvedOt < 0 || $approvedOt > 24) {
             return new IceResponse(
                 IceResponse::ERROR,

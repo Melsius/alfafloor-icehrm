@@ -641,6 +641,7 @@ create table `Attendance` (
 	`employee` bigint(20) NOT NULL,
 	`in_time` datetime default NULL,
 	`out_time` datetime default NULL,
+    `approved_overtime` decimal(4,2) DEFAULT NULL,
 	`note` varchar(500) default null,
 	`automatic_event` tinyint(1) NOT NULL DEFAULT '0',
 	CONSTRAINT `Fk_Attendance_Employee` FOREIGN KEY (`employee`) REFERENCES `Employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
