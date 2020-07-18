@@ -2131,6 +2131,9 @@ class ModuleBase {
     } else if (field[1].type === 'tinymce' || field[1].type === 'simplemde') {
       t = t.replace(/_id_/g, field[0]);
       t = t.replace(/_label_/g, field[1].label);
+    } else if (field[1].type === 'number') {
+      t = t.replace(/_id_/g, field[0]);
+      t = t.replace(/_label_/g, field[1].label);
     }
 
 
@@ -2158,6 +2161,12 @@ class ModuleBase {
       t = t.replace(/_mask_/g, `mask="${field[1].mask}"`);
     } else {
       t = t.replace(/_mask_/g, '');
+    }
+
+    if (field[1].customfields !== undefined && field[1].customfields !== null) {
+      t = t.replace(/_customfields_/g, `${field[1].customfields}`);
+    } else {
+      t = t.replace(/_customfields_/g, '');
     }
 
     return t;

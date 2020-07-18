@@ -87,7 +87,7 @@ class FormValidation {
 
     this.settings = jQuery.extend(this.settings, options);
 
-    this.inputTypes = ['text', 'radio', 'checkbox', 'file', 'password', 'select-one', 'select-multi', 'textarea', 'fileupload', 'signature'];
+    this.inputTypes = ['text', 'radio', 'checkbox', 'file', 'password', 'select-one', 'select-multi', 'textarea', 'fileupload', 'signature', 'number'];
 
     this.validator = ValidationRules;
   }

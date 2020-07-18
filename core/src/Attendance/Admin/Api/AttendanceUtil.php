@@ -15,7 +15,7 @@ use Classes\SettingsManager;
 class AttendanceUtil
 {
     const HOURSBYDAY = [
-        0, 8, 8, 8, 8, 8, 7
+        0, 7, 7, 7, 7, 7, 7
     ];
 
     // Expects $date as Unix time in seconds

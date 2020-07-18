@@ -18,6 +18,12 @@ class AttendanceHelper extends SubActionManager
         $inDate = $inDateArr[0];
         $outDateTime = $req->out_time;
         $outDate = "";
+        $approvedOt = $req->approved_overtime;
+        if ($approvedOt < 0 || $approvedOt > 24) {
+            return new IceResponse(
+                IceResponse::ERROR,
+                LanguageManager::tran('Approved OT should be between 0 and 24'));
+        }
         if (!empty($outDateTime)) {
             $outDateArr = explode(" ", $outDateTime);
             $outDate = $outDateArr[0];
@@ -96,7 +102,8 @@ class AttendanceHelper extends SubActionManager
 
         $attendance->employee = $req->employee;
         $attendance->note = $note;
-        $attendance->automatic_event = property_exists($req, "automatic_event") ? $req->automatic_event : 0;;
+        $attendance->automatic_event = property_exists($req, "automatic_event") ? $req->automatic_event : 0;
+        $attendance->approved_overtime = $approvedOt;
         $ok = $attendance->Save();
         if (!$ok) {
             LogManager::getInstance()->info($attendance->ErrorMsg());

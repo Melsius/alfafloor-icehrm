@@ -19,7 +19,8 @@ class AttendanceAdapter extends AdapterBase {
       'in_time',
       'out_time',
       'note',
-      'automatic_event'
+      'automatic_event',
+      'approved_overtime'
     ];
   }
 
@@ -31,6 +32,7 @@ class AttendanceAdapter extends AdapterBase {
       { sTitle: 'Time-Out' },
       { sTitle: 'Note' },
       { sTitle: 'Auto' },
+      { sTitle: 'Approved OT' },
     ];
   }
 
@@ -44,6 +46,7 @@ class AttendanceAdapter extends AdapterBase {
       ['out_time', { label: 'Time-Out', type: 'datetime', validation: 'none' }],
       ['note', { label: 'Note', type: 'textarea', validation: 'none' }],
       ['automatic_event', { label: 'Automatic Event', type: 'select', source: [[0, 'No'], [1, 'Yes']], validation: '' }],
+      ['approved_overtime', { label: 'Approved OT', type: 'number', customfields: "step='.25' min='0.00' max='24.00'" }],
     ];
   }
 
@@ -66,6 +69,10 @@ class AttendanceAdapter extends AdapterBase {
     const dataTableParams = {
       aoColumnDefs: [
         {
+          sWidth: "200px",
+          aTargets: [1], // employee
+        },
+        {
           fnRender(data, cell) {
             return that.preProcessRemoteTableData(data, cell, 2);
           },
@@ -84,12 +91,22 @@ class AttendanceAdapter extends AdapterBase {
           aTargets: [that.getDataMapping().length],
         },
         {
-          sWidth: "40%",
           aTargets: [4] // note
         },
         {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 5);
+          },
           sWidth: "40px",
           aTargets: [5] // automatic_event
+        },
+        {
+          sWidth: "80px",
+          aTargets: [6] // approved_overtime
+        },
+        {
+          sWidth: "100px",
+          aTargets: [7] // action_buttons
         }
       ],
     };
@@ -107,6 +124,12 @@ class AttendanceAdapter extends AdapterBase {
         return '';
       }
       return Date.parse(cell).toString('MMM d  <b>HH:mm</b>');
+    } if (id === 5) {
+        if (cell === '0') {
+          return 'No';
+        } else {
+          return 'Yes';
+        }
     }
   }
 
