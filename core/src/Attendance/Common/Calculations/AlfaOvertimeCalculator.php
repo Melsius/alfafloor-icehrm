@@ -86,9 +86,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         $time = strtotime($dateTimeStr);
         $ssinceToday = $this->calcSecondsSinceToday($time);
 
-        $expectedOutTimeS = $this->AttendanceUtil->getExpectedOutTimeSeconds($date);
-        if ($ssinceToday > $expectedOutTime) {
-            $time += ($ssinceToday - $expectedOutTimeS);
+        $expectedOutTimeS = $this->attendanceUtil->getExpectedOutTimeSeconds($time);
+        if ($ssinceToday > $expectedOutTimeS) {
+            $time -= ($ssinceToday - $expectedOutTimeS);
         }
         $time -= $time % self::ROUNDTOSECONDS;
 
@@ -122,6 +122,22 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $time;
     }
 
+    public function createOvertimeSummary($atts)
+    {
+        $atOtByDay = array();
+
+        foreach ($atts as $atEntry) {
+            if ($atEntry->out_time == "0000-00-00 00:00:00" || empty($atEntry->out_time)) {
+                continue;
+            }
+            $atDate = date("Y-m-d", strtotime($atEntry->in_time));
+            if (!isset($atOtByDay[$atDate])) {
+                $atOtByDay[$atDate] = 0;
+            }
+            $atOtByDay[$atDate] = $atEntry->approved_overtime * 3600;
+        }
+        return $atOtByDay;
+    }
     public function createAttendanceSummary($atts)
     {
         $atTimeByDay = array();
@@ -179,7 +195,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $atTimeByDay;
     }
 
-    protected function createTimeSummary($atTimeByDay)
+    protected function createTimeSummary($atTimeByDay, $atOtByDay)
     {
         $result = array(
             't' => 0,  // total worked time
@@ -198,17 +214,20 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                 $totalTimeInPeriod += $this->attendanceUtil->getExpectedTimeSeconds($dateTime->format('U'));
             }
         }
-
-        $result['o'] = $result['t'] - $totalTimeInPeriod;
-        if ($result['o'] > 0) {
-            $result['r'] = $result['t'] - $result['o'];
-            if ($this->salesEmployee) {
-                // Overtime is not applicable
-                $result['o'] = 0;
-            }
-        } else {
-            $result['r'] = $result['t'];
+        foreach ($atOtByDay as $date => $time) {
+            $result['o'] += $time;
         }
+
+        // result['t'] can never be > totalTimeInPeriod
+        $timeLeft = $totalTimeInPeriod - $result['t'];
+        // Use up leftover regular time before counting OT rates
+        if ($timeLeft >= $result['o']) {
+            // Still undertime (or exactly 0 OT)
+            $result['r'] = $result['t'] + $result['o'];
+        } else {
+            $result['r'] = $totalTimeInPeriod;
+        }
+        $result['o'] -= $timeLeft;
 
         return $result;
     }
@@ -238,8 +257,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
 
     public function getDataSeconds($atts, $actualStartDate, $aggregate = false)
     {
-        $atSummary = $this->createAttendanceSummary($atts);
-        $timeSummary = $this->createTimeSummary($this->removeAdditionalDays($atSummary, $actualStartDate));
+        $atSummary = $this->removeAdditionalDays($this->createAttendanceSummary($atts), $actualStartDate);
+        $atOtSummary = $this->removeAdditionalDays($this->createOvertimeSummary($atts), $actualStartDate);
+        $timeSummary = $this->createTimeSummary($atSummary, $atOtSummary);
         if ($aggregate) {
             return $timeSummary;
         } else {
