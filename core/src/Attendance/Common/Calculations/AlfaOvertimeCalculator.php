@@ -62,9 +62,9 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return date('H', $time) * 60*60 + date('i', $time) * 60 + date('s', $time);
     }
 
-    private function roundFirstInTimeStr($timeStr)
+    private function roundFirstInTimeStr($dateTimeStr)
     {
-        $time = strtotime($timeStr);
+        $time = strtotime($dateTimeStr);
         $ssinceToday = $this->calcSecondsSinceToday($time);
 
         if ($ssinceToday < 8*60*60) {
@@ -81,11 +81,25 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         return $time;
     }
 
+    private function roundOutTimeStr($dateTimeStr)
+    {
+        $time = strtotime($dateTimeStr);
+        $ssinceToday = $this->calcSecondsSinceToday($time);
+
+        $expectedOutTimeS = $this->AttendanceUtil->getExpectedOutTimeSeconds($date);
+        if ($ssinceToday > $expectedOutTime) {
+            $time += ($ssinceToday - $expectedOutTimeS);
+        }
+        $time -= $time % self::ROUNDTOSECONDS;
+
+        return $time;
+    }
+
     private function calcOffsiteTimeWorked($inTimeStr, $outTimeStr)
     {
         // Calculate time for curDate
         $roundedInTime = $this->roundFirstInTimeStr($inTimeStr);
-        $roundedOutTime = $this->roundTimeStr($outTimeStr);
+        $roundedOutTime = $this->roundOutTimeStr($outTimeStr);
         $time = $roundedOutTime - $roundedInTime;
 
         if ($time <= 0) {
@@ -153,7 +167,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
                     $inTime = $this->roundTimeStr($atEntry->in_time);
                 }
 
-                $diff = $this->roundTimeStr($atEntry->out_time) - $inTime;
+                $diff = $this->roundOutTimeStr($atEntry->out_time) - $inTime;
                 if ($diff < 0) {
                     $diff = 0;
                 }

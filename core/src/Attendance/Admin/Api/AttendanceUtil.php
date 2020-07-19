@@ -14,8 +14,10 @@ use Classes\SettingsManager;
 
 class AttendanceUtil
 {
+    // Start days at 08:00
+    const INTIME = 8;
     const HOURSBYDAY = [
-        0, 7, 7, 7, 7, 7, 7
+        0, 8, 8, 8, 8, 8, 7
     ];
 
     // Expects $date as Unix time in seconds
@@ -29,6 +31,19 @@ class AttendanceUtil
         }
         // Date not in public holidays
         return self::HOURSBYDAY[date('w', $date)] * 3600;
+    }
+
+    // Expects $date as Unix time in seconds
+    public function getExpectedOutTimeSeconds($date)
+    {
+        $dateStr = date('Y-m-d', $date);
+        $publicHoliday = new PublicHoliday();
+        $publicHoliday->Load('date = ?', $dateStr);
+        if ($publicHoliday->date == $dateStr) {
+            return 0;
+        }
+        // Date not in public holidays
+        return self::INTIME * 3600 + self::HOURSBYDAY[date('w', $date)] * 3600;
     }
 
     public function getAttendanceSummary($employeeId, $startDate, $endDate)
