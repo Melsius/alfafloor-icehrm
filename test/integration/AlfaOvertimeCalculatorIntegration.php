@@ -72,15 +72,15 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => '2020-01-06 08:00:00',
-            'out_time' => '2020-01-06 17:00:00'
+            'out_time' => '2020-01-06 16:00:00'
         ]));
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-06', '2020-01-06');
         if ($isOffsite) {
-            $this->assertEquals($sum['t']/3600, 8);
+            $this->assertEquals($sum['r']/3600, 7);
         } else {
-            $this->assertEquals($sum['t']/3600, 9);
+            $this->assertEquals($sum['r']/3600, 8);
         }
 
         // Multi-punch
@@ -121,16 +121,17 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-07', '2020-01-10');
         if ($empIndex == self::SALES_INDEX) {
             // Reduce by morning grace period
-            $this->assertEquals($sum['t']/3600, 17 + 0.25*2);
+            $this->assertEquals($sum['r']/3600, 17 + 0.25*2);
             $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-08', '2020-01-08');
-            $this->assertEquals($sum['t']/3600, 4);
+            $this->assertEquals($sum['r']/3600, 4);
             $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-09', '2020-01-09');
-            $this->assertEquals($sum['t']/3600, 4.25);
+            $this->assertEquals($sum['r']/3600, 4.25);
             $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-10', '2020-01-10');
-            $this->assertEquals($sum['t']/3600, 1.25);
+            $this->assertEquals($sum['r']/3600, 1.25);
         } else {
             // Should be the same for both groups
-            $this->assertEquals($sum['t']/3600, 17);
+            $this->assertEquals($sum['t']/3600, 17 - 4*2 - 7);
+            $this->assertEquals($sum['r']/3600, 17);
         }
     }
 
@@ -143,12 +144,13 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkOffsiteBreak(self::FREELANCE_ON_SITE_INDEX, false);
     }
 
-    private function addPunch($empIndex, $in_time, $out_time)
+    private function addPunch($empIndex, $in_time, $out_time, $approved_overtime='0')
     {
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => $in_time,
-            'out_time' => $out_time
+            'out_time' => $out_time,
+            'approved_overtime' => $approved_overtime
         ]));
         $this->actionMgr->savePunch($punch);
     }
@@ -219,7 +221,7 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->checkNoOvertime(self::FREELANCE_ON_SITE_INDEX);
     }
 
-    private function checkRegularOvertime($empIndex, $isSales)
+    private function checkRegularOvertime($empIndex)
     {
         $attUtil = new AttendanceUtil();
 
@@ -245,26 +247,23 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => '2020-01-15 13:00:00',
-            'out_time' => '2020-01-15 18:00:00'
+            'out_time' => '2020-01-15 18:00:00',
+            'approved_overtime' => '1'
         ]));
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
         $this->assertEquals($sum['t'], (11*8 + 2*7 + 1)*60*60);
         $this->assertEquals($sum['r'], $sum['t'] - 1*60*60);
-        if ($isSales) {
-            $this->assertEquals($sum['o'], 0);
-        } else {
-            $this->assertEquals($sum['o'], 1*60*60);
-        }
+        $this->assertEquals($sum['o'], 1*60*60);
         $this->assertEquals($sum['d'], 0);
     }
 
     public function testRegularOvertime()
     {
-        $this->checkRegularOvertime(self::REGULAR_ON_SITE_INDEX, false);
-        $this->checkRegularOvertime(self::REGULAR_OFF_SITE_INDEX, false);
-        $this->checkRegularOvertime(self::SALES_INDEX, true);
+        $this->checkRegularOvertime(self::REGULAR_ON_SITE_INDEX);
+        $this->checkRegularOvertime(self::REGULAR_OFF_SITE_INDEX);
+        $this->checkRegularOvertime(self::SALES_INDEX);
     }
 
     private function checkUndertime($empIndex)
@@ -298,9 +297,9 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
-        $this->assertEquals($sum['t'], (11*8 + 2*7 - 1)*60*60);
-        $this->assertEquals($sum['r'], $sum['t']);
+        $this->assertEquals($sum['r'], (11*8 + 2*7 - 1)*60*60);
         $this->assertEquals($sum['o'], -1*60*60);
+        $this->assertEquals($sum['t'], $sum['r'] + $sum['o']);
         $this->assertEquals($sum['d'], 0);
     }
 
@@ -362,14 +361,15 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $punch = json_decode(json_encode([
             'employee' => $this->ids[$empIndex],
             'in_time' => '2020-01-15 13:00:00',
-            'out_time' => '2020-01-15 18:00:00'
+            'out_time' => '2020-01-15 18:00:00',
+            'approved_overtime' => '1'
         ]));
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-15');
-        $this->assertEquals($sum['t'], (10*8 + 1*7 + 1)*60*60);
-        $this->assertEquals($sum['r'], $sum['t'] - 1*60*60);
+        $this->assertEquals($sum['r'], (10*8 + 1*7)*60*60);
         $this->assertEquals($sum['o'], 1*60*60);
+        $this->assertEquals($sum['t'], $sum['r'] + $sum['o']);
         $this->assertEquals($sum['d'], 0);
     }
     
@@ -410,13 +410,13 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[0], '2020-01-01', '2020-01-01');
-        $this->assertEquals($sum['t'], 1*60*60);
+        $this->assertEquals($sum['r'], 1*60*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[0], '2020-01-02', '2020-01-02');
-        $this->assertEquals($sum['t'], 1*60*60);
+        $this->assertEquals($sum['r'], 1*60*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[0], '2020-01-03', '2020-01-03');
-        $this->assertEquals($sum['t'], 3*15*60);
+        $this->assertEquals($sum['r'], 3*15*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[0], '2020-01-04', '2020-01-04');
-        $this->assertEquals($sum['t'], 1*60*60);
+        $this->assertEquals($sum['r'], 1*60*60);
     }
 
     public function testSalesGracePeriod()
@@ -445,11 +445,11 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->actionMgr->savePunch($punch);
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-01');
-        $this->assertEquals($sum['t'], 8*60*60);
+        $this->assertEquals($sum['r'], 8*60*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-02', '2020-01-02');
-        $this->assertEquals($sum['t'], 8*60*60);
+        $this->assertEquals($sum['r'], 8*60*60);
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-03', '2020-01-03');
-        $this->assertEquals($sum['t'], 8*60*60 - 15*60);
+        $this->assertEquals($sum['r'], 8*60*60 - 15*60);
     }
 
     public function testPublicHolidays()
@@ -461,8 +461,8 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
 
         // Before adding a public holiday
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-02');
-        $this->assertEquals($sum['t'], 2*8*60*60);
-        $this->assertEquals($sum['r'], $sum['t']);
+        $this->assertEquals($sum['r'], 2*8*60*60);
+        $this->assertEquals($sum['t'], $sum['r']);
         $this->assertEquals($sum['o'], 0);
 
         // Add a public holiday and verify one day is gone
@@ -472,9 +472,9 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $publicHoliday->Save();
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-01', '2020-01-02');
-        $this->assertEquals($sum['t'], 2*8*60*60);
-        $this->assertEquals($sum['r'], 1*8*60*60); // The previously booked day is now overtime
-        $this->assertEquals($sum['o'], 1*8*60*60);
+        $this->assertEquals($sum['r'], 1*8*60*60);
+        $this->assertEquals($sum['o'], 0); // No overtime granted
+        $this->assertEquals($sum['t'], $sum['r']);
     }
 
     public function testRealWorld()
@@ -487,23 +487,23 @@ class AlfaOvertimeCalculatorIntegration extends \TestTemplate
         $this->addPunch($empIndex, '2020-02-01 07:41', '2020-02-01 16:00');
         $this->addPunch($empIndex, '2020-02-03 07:46', '2020-02-03 17:04');
         $this->addPunch($empIndex, '2020-02-04 07:37', '2020-02-04 17:04');
-        $this->addPunch($empIndex, '2020-02-05 06:02', '2020-02-05 17:04');
-        $this->addPunch($empIndex, '2020-02-05 17:05', '2020-02-05 19:05');
-        $this->addPunch($empIndex, '2020-02-06 06:01', '2020-02-06 17:03');
-        $this->addPunch($empIndex, '2020-02-06 17:04', '2020-02-06 19:04');
-        $this->addPunch($empIndex, '2020-02-07 05:48', '2020-02-07 17:05');
-        $this->addPunch($empIndex, '2020-02-07 17:06', '2020-02-07 19:06');
-        $this->addPunch($empIndex, '2020-02-09 13:00', '2020-02-09 15:00');
-        $this->addPunch($empIndex, '2020-02-10 07:34', '2020-02-10 17:40');
-        $this->addPunch($empIndex, '2020-02-10 17:41', '2020-02-10 17:42');
+        $this->addPunch($empIndex, '2020-02-05 06:02', '2020-02-05 17:04', '2');
+        //$this->addPunch($empIndex, '2020-02-05 17:05', '2020-02-05 19:05', '2');
+        $this->addPunch($empIndex, '2020-02-06 06:01', '2020-02-06 17:03', '2');
+        //$this->addPunch($empIndex, '2020-02-06 17:04', '2020-02-06 19:04', '2');
+        $this->addPunch($empIndex, '2020-02-07 05:48', '2020-02-07 17:05', '2');
+        //$this->addPunch($empIndex, '2020-02-07 17:06', '2020-02-07 19:06', '2');
+        $this->addPunch($empIndex, '2020-02-09 13:00', '2020-02-09 15:00', '2'); // Sunday
+        $this->addPunch($empIndex, '2020-02-10 07:34', '2020-02-10 17:40', '0.5');
+        //$this->addPunch($empIndex, '2020-02-10 17:41', '2020-02-10 17:42');
         $this->addPunch($empIndex, '2020-02-11 07:38', '2020-02-11 17:03');
         $this->addPunch($empIndex, '2020-02-12 07:39', '2020-02-12 17:05');
-        $this->addPunch($empIndex, '2020-02-13 06:24', '2020-02-13 17:03');
-        $this->addPunch($empIndex, '2020-02-13 17:04', '2020-02-13 18:30');
+        $this->addPunch($empIndex, '2020-02-13 06:24', '2020-02-13 17:03', '1.5');
+        //$this->addPunch($empIndex, '2020-02-13 17:04', '2020-02-13 18:30', '1.5');
 
         $sum = $attUtil->getAttendanceSummary($this->ids[$empIndex], '2020-01-30', '2020-02-13');
-        $this->assertEquals($sum['t']/3600, 105);
         $this->assertEquals($sum['r']/3600, 95);
         $this->assertEquals($sum['o']/3600, 10);
+        $this->assertEquals($sum['t'], $sum['r'] + $sum['o']);
     }
 }
