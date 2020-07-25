@@ -10,6 +10,8 @@ use Payroll\Common\Model\DeductionGroup;
 class AlfaOvertimeCalculator extends BasicOvertimeCalculator 
 {
     const ROUNDTOSECONDS = 15*60;
+    // Start days at 08:00
+    const INTIMESECONDS = 8*60*60;
     const BREAKSECONDS = 60*60;
     const BREAKTIMESTART = 12*60*60;
     const BREAKTIMEEND = 13*60*60;
@@ -86,8 +88,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         $time = strtotime($dateTimeStr);
         $ssinceToday = $this->calcSecondsSinceToday($time);
 
-        $expectedOutTimeS = $this->attendanceUtil->getExpectedOutTimeSeconds($time);
-        if ($ssinceToday > $expectedOutTimeS) {
+        $expectedOutTimeS = $this->attendanceUtil->getExpectedOutTimeSeconds($time, self::INTIMESECONDS, self::BREAKSECONDS);
+        if ($expectedOutTimeS != 0 && $ssinceToday > $expectedOutTimeS) {
             $time -= ($ssinceToday - $expectedOutTimeS);
         }
         $time -= $time % self::ROUNDTOSECONDS;
@@ -105,7 +107,8 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
         if ($time <= 0) {
             \Utils\LogManager::getInstance()->error(
                 "Negative time calculated for ".
-                $curDate.": ".($time/3600)." from ".$firstAtEntry->in_time." to ".$prevAtEntry->out_time);
+                $curDate.": ".($time/3600)." from ".$inTimeStr." to ".$outTimeStr
+);
         }
 
         $inTime = strtotime($inTimeStr);
@@ -134,7 +137,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             if (!isset($atOtByDay[$atDate])) {
                 $atOtByDay[$atDate] = 0;
             }
-            $atOtByDay[$atDate] = $atEntry->approved_overtime * 3600;
+            $atOtByDay[$atDate] += $atEntry->approved_overtime * 3600;
         }
         return $atOtByDay;
     }
@@ -208,7 +211,7 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $totalTimeInPeriod = 0;
         }
         foreach ($atTimeByDay as $date => $time) {
-            $result['t'] += $time;
+            $result['r'] += $time;
             if ($this->freelanceEmployee) {
                 $dateTime = new \DateTime($date);
                 $totalTimeInPeriod += $this->attendanceUtil->getExpectedTimeSeconds($dateTime->format('U'));
@@ -218,16 +221,20 @@ class AlfaOvertimeCalculator extends BasicOvertimeCalculator
             $result['o'] += $time;
         }
 
-        // result['t'] can never be > totalTimeInPeriod
-        $timeLeft = $totalTimeInPeriod - $result['t'];
+        $timeLeft = $totalTimeInPeriod - $result['r'];
         // Use up leftover regular time before counting OT rates
         if ($timeLeft >= $result['o']) {
             // Still undertime (or exactly 0 OT)
-            $result['r'] = $result['t'] + $result['o'];
+            $result['r'] += $result['o'];
         } else {
             $result['r'] = $totalTimeInPeriod;
         }
-        $result['o'] -= $timeLeft;
+        if ($timeLeft >= 0) {
+            // Reduce overtime by regular time left
+            $result['o'] -= $timeLeft;
+        }
+        // Add overtime to the total
+        $result['t'] = $result['r'] + $result['o'];
 
         return $result;
     }
