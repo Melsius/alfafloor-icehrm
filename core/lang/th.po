@@ -1969,3 +1969,6 @@ msgstr "รายรับเพิ่ม ของพนักงาน"
 
 msgid "Employee Deductions"
 msgstr "รายจ่ายเพิ่ม ของพนักงาน"
+
+msgid "Approved OT"
+msgstr "จำนวนชม.ร่วงเวลา"
