@@ -88,25 +88,24 @@ class AttendanceHelper extends SubActionManager
         }
 
         $attendance = new Attendance();
+        // Load the existing punch
         if (!empty($req->id)) {
             $attendance->Load("id = ?", array($req->id));
-            if ($attendance->automatic_event) {
-                if ($user->user_level != 'Admin') {
-                    return new IceResponse(IceResponse::ERROR, "Only Admins are allowed to edit automatic clocking events");
-                }
-            }
         }
-        $attendance->in_time = $inDateTime;
-        if (empty($outDateTime)) {
-            $attendance->out_time = null;
-        } else {
-            $attendance->out_time = $outDateTime;
-        }
-
-        $attendance->employee = $req->employee;
-        $attendance->note = $note;
-        $attendance->automatic_event = property_exists($req, "automatic_event") ? $req->automatic_event : 0;
         $attendance->approved_overtime = $approvedOt;
+        if (!$attendance->automatic_event || $user->user_level == 'Admin') {
+            // If it's and automatic event, only an admin can change the remaining fields
+            $attendance->in_time = $inDateTime;
+            if (empty($outDateTime)) {
+                $attendance->out_time = null;
+            } else {
+                $attendance->out_time = $outDateTime;
+            }
+
+            $attendance->employee = $req->employee;
+            $attendance->note = $note;
+            $attendance->automatic_event = property_exists($req, "automatic_event") ? $req->automatic_event : 0;
+        }
         $ok = $attendance->Save();
         if (!$ok) {
             LogManager::getInstance()->info($attendance->ErrorMsg());
