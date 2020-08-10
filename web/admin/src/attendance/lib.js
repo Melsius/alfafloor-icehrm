@@ -50,6 +50,18 @@ class AttendanceAdapter extends AdapterBase {
     ];
   }
 
+  postRenderForm(object, $tempDomObj) {
+    if (object != null && object !== undefined && object.id !== undefined && object.id != null) {
+      if (object.automatic_event == "1" && this.user.user_level !== 'Admin') {
+          $tempDomObj.find('#in_time').attr('disabled', 'disabled');
+          $tempDomObj.find('#out_time').attr('disabled', 'disabled');
+          $tempDomObj.find('#note').attr('disabled', 'disabled');
+          $tempDomObj.find('#automatic_event').attr('disabled', 'disabled');
+          $tempDomObj.find('#employee').attr('disabled', 'disabled');
+      }
+    }
+  }
+
   getFilters() {
     return [
       ['employee', {
@@ -301,7 +313,7 @@ class AttendanceAdapter extends AdapterBase {
       html = html.replace('_delete_', '');
     }
 
-    if (this.showEdit && (data._org.automatic_event == '0' || this.user.user_level == 'Admin')) {
+    if (this.showEdit) {
       html = html.replace('_edit_', editButton);
     } else {
       html = html.replace('_edit_', '');
